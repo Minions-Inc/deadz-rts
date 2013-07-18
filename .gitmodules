@@ -1,0 +1,3 @@
+[submodule "lib/PathFinding.js"]
+	path = lib/PathFinding.js
+	url = https://github.com/qiao/PathFinding.js.git
