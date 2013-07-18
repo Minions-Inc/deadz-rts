@@ -3,7 +3,7 @@ var express = require('express'),
 	http = require('http'),
 	server = http.createServer(app).listen(80),
 	io = require('socket.io').listen(server),
-	game = require('./game.js');
+	game = require('./server/game.js');
 
 io.set('log level', 2);
 
@@ -11,8 +11,8 @@ app.use(express.static(__dirname+'/client/html'));
 app.use(express.static(__dirname+'/client/js'));
 app.use(express.static(__dirname+'/client/blender'));
 app.use(express.static(__dirname+'/client/img'));
-app.use(express.static(__dirname+'/PathFinding.js-master/lib'));
-app.use('/Ponies', express.static(__dirname+'/Ponies'));
+app.use(express.static(__dirname+'/lib/PathFinding.js-master/lib'));
+app.use(express.static(__dirname+'/client/lib/three.js/build'));
 
 io.sockets.on('connection', function(socket) {
 	console.log("Got new connection "+socket.id+" from IP: "+socket.handshake.address.address);

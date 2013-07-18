@@ -1,6 +1,6 @@
 var objects = {},
-	navData = require('./client/js/navData.js'),
-	PF = require('./lib/PathFinding.js/src/PathFinding.js'),
+	navData = require('../client/js/navData.js'),
+	PF = require('pathfinding'),
 	objNav = {},
 	zombies = {},
 	zombieID = 0;
