@@ -1,3 +1,6 @@
 [submodule "lib/PathFinding.js"]
 	path = lib/PathFinding.js
 	url = https://github.com/qiao/PathFinding.js.git
+[submodule "lib/three.js"]
+	path = lib/three.js
+	url = https://github.com/mrdoob/three.js.git
