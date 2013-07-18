@@ -11,7 +11,7 @@ app.use(express.static(__dirname+'/client/html'));
 app.use(express.static(__dirname+'/client/js'));
 app.use(express.static(__dirname+'/client/blender'));
 app.use(express.static(__dirname+'/client/img'));
-app.use(express.static(__dirname+'/lib/PathFinding.js-master/lib'));
+app.use(express.static(__dirname+'/lib/PathFinding.js/lib'));
 app.use(express.static(__dirname+'/client/lib/three.js/build'));
 
 io.sockets.on('connection', function(socket) {
