@@ -1,4 +1,4 @@
-deadz-rts
+DeadZ RTS
 =========
 
-An RTS made with node.js, socket.io, three.js and express.
+A multiplayer RTS made with three.js, PathFinding.js, node.js, socket.io and express.
