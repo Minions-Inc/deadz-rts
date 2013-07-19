@@ -12,14 +12,13 @@ function startSpawningZombies(io) {
 				zombieID++;
 				var objectToFollow = pickRandomProperty(objects);
 				zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
-				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombies["Zombie"+zombieID],objects[objectToFollow],1,1,500,"Zombie"+zombieID+"Nav",io)});
+				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombies["Zombie"+zombieID],objects[objectToFollow],1,1,250,"Zombie"+zombieID+"Nav",io)});
 			} else {
 				console.log("Tried to spawn a zombie when none existed!");
 			}
 		} catch (e) {
 			console.warn("FATAL ERROR: "+e.toString());
 		}
-
 	}, 5000);
 }
 
@@ -114,6 +113,10 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, speed, na
 
 function zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, navName, io) {
 	try {
+		if(object == undefined || object.typeof !== "object") {
+			delete object;
+			return;
+		}
 	    objNav[navName] = {path: finder.findPath(object.pos.x,object.pos.z,targetObj.pos.x,targetObj.pos.z,grid.clone())};
 	    //var steps = (objNav[navName].path.length>steps) ? steps : objNav[navName].path.length-1;
 	    //steps = (steps < 0) ? steps : 0;
