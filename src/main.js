@@ -11,8 +11,8 @@ app.use(express.static(__dirname+'/client/html'));
 app.use(express.static(__dirname+'/client/js'));
 app.use(express.static(__dirname+'/client/blender'));
 app.use(express.static(__dirname+'/client/img'));
-app.use(express.static(__dirname+'/lib/PathFinding.js/lib'));
-app.use(express.static(__dirname+'/client/lib/three.js/build'));
+app.use(express.static(__dirname+'/lib/pathfinding/lib'));
+app.use(express.static(__dirname+'/client/lib/threejs/build'));
 
 io.sockets.on('connection', function(socket) {
 	console.log("Got new connection "+socket.id+" from IP: "+socket.handshake.address.address);

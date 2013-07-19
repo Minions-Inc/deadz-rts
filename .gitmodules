@@ -1,6 +1,6 @@
-[submodule "src/client/lib/three.js"]
-	path = src/client/lib/three.js
+[submodule "three.js"]
+	path = src/client/lib/threejs
 	url = https://github.com/mrdoob/three.js.git
-[submodule "src/lib/PathFinding.js"]
-	path = src/lib/PathFinding.js
+[submodule "PathFinding.js"]
+	path = src/lib/pathfinding
 	url = https://github.com/qiao/PathFinding.js.git
