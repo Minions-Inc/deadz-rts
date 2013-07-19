@@ -10,6 +10,20 @@ Requirements
 Needs node.js to run, with pathfinding, socket.io and express modules installed via npm.
 To do this:
 
-1. npm install express
-2. npm install socket.io
-3. npm install pathfinding
+1. Install node.js - http://nodejs.org/
+2. Install required modules for node:
+
+    ```bash
+    npm install express # Install express node module
+    npm install socket.io # Install socket.io node module
+    ```
+
+3. Run game:
+
+    ```bash
+    cd /path/to/deadz-rts/ # Go into game directory
+    node main # Run game server
+    ```
+
+4. Go to http://localhost/
+5. Profit!
