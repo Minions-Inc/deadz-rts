@@ -5,8 +5,8 @@ A multiplayer RTS made with three.js, PathFinding.js, node.js, socket.io and exp
 
 PLEASE NOTE - INCOMPLETE, MAY OR MAY NOT FUNCTION PROPERLY!
 
-Requirements
-------------
+How to Run
+----------
 Needs node.js to run, with pathfinding, socket.io and express modules installed via npm.
 To do this:
 
