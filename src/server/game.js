@@ -11,8 +11,9 @@ function startSpawningZombies(io) {
 			if(objects.length !== 0) {
 				zombieID++;
 				var objectToFollow = pickRandomProperty(objects);
-				zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos, followedObj: objects[objectToFollow]};
-				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombies["Zombie"+zombieID],objects[objectToFollow],1,1,2500,"Zombie"+zombieID+"Nav",io)});
+				zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
+				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombies["Zombie"+zombieID],objects[objectToFollow],1,1,500,"Zombie"+zombieID+"Nav",io)});
+				console.log(zombies["Zombie"+zombieID]);
 			} else {
 				console.log("Tried to spawn a zombie when none existed!");
 			}
@@ -21,6 +22,16 @@ function startSpawningZombies(io) {
 		}
 
 	}, 30000);
+}
+
+Object.prototype.clone = function() {
+	var obj = this;
+    if (obj == null || typeof(obj) != "object") return obj;
+    var copy = new Object();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
 }
 
 function pickRandomProperty(obj) {
@@ -78,12 +89,12 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, speed, na
 	    if(!continued) {
 	        if (typeof(objNav[navName]) !== "undefined") {
 	            objNav[navName] = {
-	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid)
+	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
 	            };
 	            return;
 	        } else {
 	            objNav[navName] = {
-	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid)
+	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
 	            };
 	        }
 	    }
@@ -105,7 +116,9 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, speed, na
 
 function zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, navName, io) {
 	try {
-	    objNav[navName] = {path: finder.findPath(object.pos.x,object.pos.z,targetObj.pos.x,targetObj.pos.z,grid.clone())};
+		var zombieGrid = grid.clone();
+		console.log(targetObj)
+	    objNav[navName] = {path: finder.findPath(object.pos.x,object.pos.z,targetObj.pos.x,targetObj.pos.z,zombieGrid)};
 	    //var steps = (objNav[navName].path.length>steps) ? steps : objNav[navName].path.length-1;
 	    //steps = (steps < 0) ? steps : 0;
 	    step = (objNav[navName].path.length > 1) ? steps : 0;
