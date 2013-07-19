@@ -11,14 +11,14 @@ Needs node.js to run, with pathfinding, socket.io and express modules installed 
 To do this:
 
 1. Install node.js - http://nodejs.org/
-2. Install required modules for node:
+2. Install required modules for node using cmd/bash:
 
     ```bash
     npm install express # Install express node module
     npm install socket.io # Install socket.io node module
     ```
 
-3. Run game:
+3. Run game using using cmd/bash:
 
     ```bash
     cd /path/to/deadz-rts/ # Go into game directory
