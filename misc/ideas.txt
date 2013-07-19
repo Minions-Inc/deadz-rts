@@ -1,0 +1,59 @@
+Game type: RTS
+Based in: Apocolyses (Zombie Apocolypse)
+
+Game Details:
+* Defend against other players + zombies (AI)
+* Goal - raid the enemies base, get all resources, be last one standing
+* Raiding does not give direct points in itself, but will allow you to take other's stores (limited on-man storage), others will MOST LIKELY die out/be eliminated.
+* Base creates army, also reproduction heirarchy - "Hero" creates "Commanders", "Commanders" create "Minions".
+* Start with 1 "Hero" and 1 "Commander"
+* All created characters spawn at base, need at least one of the other types to be able to crate them.
+* "Minions" have different types - builders/fighters/gatherers
+* Gatherers can't gather without an active base.
+* Lower ranks have lower health/on-man storage.
+* Zombies have a chance to take over bodies of victims, and chance grows as game goes on.
+
+Random Unused Ideas - thought up by my tired, randomness-filled brain:
+* NEED GUNZ - LOTS OF GUNZ
+* TANKS
+* MACHETTES
+* ANYTHING GOES
+* GIANT PURPLE SAINTS ROW 3 DILDO WIELDED BY HUGE FAT LADYMAN
+* ZOMBIE ELEPHANTS - WAY MOAR AGGRESSIVE AND WANNA JUST FUCKING KILL YOU
+
+Team Members:
+* Michael Suveges
+* Andrew Silver
+* Steven Ngo
+* Joshua Morris
+* Trent Nettleton
+* William Lin
+
+Team name:
+* Minions Inc (Incorperated) (FIRST ONES TO USE THIS)
+
+Pathfinding algorithms:
+* A-Star/A* Search Algorithm (Very efficient):
+  - https://en.wikipedia.org/wiki/A*_search_algorithm
+* Recursive Backtracking (Simple, but may not choose the best path):
+  - http://rosettacode.org/wiki/Maze_generation#JavaScript
+  - http://rosettacode.org/wiki/Maze_solving
+
+Used libraries:
+* Pathfinding.js - https://github.com/qiao/PathFinding.js
+* three.js - WebGL Rendering Library
+* Node.js - Server backend - http://nodejs.org/
+* socket.io - Javascript TCP communication platform
+* express - Web server library for Node.js
+* Blender three.js Exporter - https://github.com/mrdoob/three.js/tree/master/utils/exporters/blender
+* They Will Eat You (Google Chrome Experiments) - A three.js zombie survival game POC - http://theywilleatyou.com/ (code snippets for navmesh generation from an image, among other functions, not a library in itself)
+
+Used Software:
+* Blender - 3D Modeling software - http://blender.org/
+* Sublime Text 2 - Multi-purpose IDE - http://www.sublimetext.com/
+* Autodesk Maya 2013 x64 - 3D Modeling software - http://autodesk.com/
+* Microsoft PowerPoint 2012 - Presentation - http://microsoft.com/
+
+Other notes:
+* Josh@xnetcode.com - Did Unity3D Presentation
+* Skype: joshuacarpeggiani@gmail.com - Did Unity3D Presentation
