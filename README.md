@@ -7,23 +7,34 @@ PLEASE NOTE - INCOMPLETE, MAY OR MAY NOT FUNCTION PROPERLY!
 
 How to Run
 ----------
-Needs node.js to run, with pathfinding, socket.io and express modules installed via npm.
+Needs node.js to run, with socket.io and express modules installed via npm.
+Also requires git to download.
+
+**You can NOT use Github zip file download. You must clone the repository**
+
 To do this:
 
 1. Install node.js - http://nodejs.org/
 2. Install required modules for node using cmd/bash:
 
     ```bash
-    npm install express # Install express node module
-    npm install socket.io # Install socket.io node module
+    $ npm install express
+    $ npm install socket.io
     ```
 
-3. Run game using using cmd/bash:
+3. Clone the repository:
 
     ```bash
-    cd /path/to/deadz-rts/ # Go into game directory
-    node main # Run game server
+    $ git clone https://github.com/Silvea12/deadz-rts.git
+    $ cd deadz-rts
+    $ git submodule update --init
     ```
 
-4. Go to http://localhost/
-5. Profit!
+4. Run the game:
+
+    ```bash
+    $ node main
+    ```
+
+5. Go to http://localhost/
+6. Profit!
