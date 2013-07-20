@@ -1,7 +1,8 @@
-var express = require('express'),
+var cmdArgs = process.argv.splice(2),
+	express = require('express'),
 	app = express(),
 	http = require('http'),
-	server = http.createServer(app).listen(80),
+	server = http.createServer(app).listen(/^\d+$/.test(cmdArgs[0]) ? cmdArgs[0] : 80),
 	io = require('socket.io').listen(server),
 	game = require('./server/game.js');
 
