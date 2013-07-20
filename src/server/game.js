@@ -48,7 +48,7 @@ function newPlayer(socket, io, data) {
 }
 
 function sendPlayers(socket, io, data) {
-	for(var i in objects) if(i != socket.id) socket.emit('newPlayer', {name: objects[i].name, model: data.model, pos: objects[i].pos});
+	for(var i in objects) if(i != socket.id && objects.hasOwnProperty(i)) socket.emit('newPlayer', {name: objects[i].name, model: data.model, pos: objects[i].pos});
 }
 
 function movePlayer(socket, io, data) {
@@ -58,7 +58,7 @@ function movePlayer(socket, io, data) {
 }
 
 function clickPos(socket, io, data) {
-	setupNavData(navData.level1NavData, 500, 500, function(a,b){runPathData(a,b,objects[socket.id],{x:Math.floor(data.x),z:Math.floor(data.z)},1,1,20,socket.id,socket,io)});
+	setupNavData(navData.level1NavData, 500, 500, function(a,b){runPathData(a,b,objects[socket.id],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,100,socket.id,socket,io)});
 }
 
 function disconnected(socket, io) {
