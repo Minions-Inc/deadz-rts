@@ -33,6 +33,8 @@ To do this:
 
     ```bash
     $ node main
+    or
+    $ node main [port]
     ```
 
 5. Go to http://localhost/
