@@ -12,38 +12,84 @@
 		<link rel="stylesheet" href="/qunit-1.12.0.css" />
 	</head>
 	<body>
-	<script type="text/javascript" src="/mouseCameraMove.js"></script>
-	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="/socketFunctions.js"></script>
-	<script type="text/javascript" src="/imgToMap.js"></script>
-	<script type="text/javascript" src="/pathfinding-browser.min.js"></script>
-	<script type="text/javascript" src="/navData.js"></script>
-	<script type="text/javascript" src="/mouseMove.js"></script>
-	<div id="qunit"></div>
-	<div id="qunit-fixture"></div>
-	<script type="text/javascript" src="/qunit-1.12.0.js"></script>
-	<script type="text/javascript">
-		test("QUnit is working", function() {
-			ok(true);
-		});
-		asyncTest("Socket connection", function() {
-			socket.on('connect', function() {
-				start();
-				ok(socket.socket.connected, "Connected");
-			});
-		});
-		asyncTest("Navigation Data Generation", 2, function() {
-			LoadImageDataPixelMap("/level1NavTex.png",function(navData) {
-				start();
-				ok(navData, "Converted image to navData");
-				//stop();
-				setupNavData(navData.toMatrix(), 500, 500, function(a,b){
-					//start();
-					ok(a&&b, "Set up navData");
-					//start();
+		<script type="text/javascript" src="/mouseCameraMove.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/imgToMap.js"></script>
+		<script type="text/javascript" src="/pathfinding-browser.min.js"></script>
+		<script type="text/javascript" src="/navData.js"></script>
+		<script type="text/javascript" src="/mouseMove.js"></script>
+		<script type="text/javascript" src="/qunit-1.12.0.js"></script>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+		<script type="text/javascript">
+			//module("main");
+			/*
+				Assert:
+				equal(a,b,"c");
+				notEqual(a,b,"c");
+				deepEqual(a,b,"c");
+				notDeepEqual(a,b,"c");
+				strictEqual(a,b,"c");
+				notStrictEqual(a,b,"c");
+				ok(a,"b");
+				throws(block, expected, message);
+			*/
+
+			var socket = io.connect(window.location.host);
+
+			module("Client-Server communication");
+			
+			asyncTest("Socket connection", 3, function() {
+				socket.on('connect', function() {
+					ok(socket.socket.connected, "Connected");
+					ok(socket.emit('ping'), "Ping!");
+				});
+				socket.on('pong', function(data) {
+					if(data == null) {
+						ok(true, "Pong!");
+						start();
+					}
+				});
+				socket.on('connect_failed', function () {
+					ok(false, "Connection failed");
+					start();
+				});
+				socket.on('error', function () {
+					ok(false, "Connection error");
+					start();
 				});
 			});
-		});
-	</script>
+			asyncTest("Consistency of data", 25, function() {
+				var vals = [];
+				var j = 0;
+				for(var i=1;i<26;i++) {
+					vals.push(i*Math.random());
+					socket.emit("ping",{id:i-1,val:vals[i-1]});
+				}
+				socket.on("pong", function(data) {
+					if(data != null) {
+						strictEqual(data.val,vals[data.id], data.val+" equal to "+vals[data.id]);
+						j++;
+						if(j==25)
+							start();
+					}
+				});
+				//start();
+			});
+
+			module("Calculation");
+			asyncTest("Navigation Data Generation", 2, function() {
+				LoadImageDataPixelMap("/level1NavTex.png",function(navData) {
+					start();
+					ok(navData, "Converted image to navData");
+					//stop();
+					setupNavData(navData.toMatrix(), 500, 500, function(a,b){
+						//start();
+						ok(a&&b, "Set up navData");
+						//start();
+					});
+				});
+			});
+		</script>
 	</body>
 </html>
