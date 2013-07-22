@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>QUnit Tests</title>
+		<style type="text/css">
+			body {
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+		<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" />
+	</head>
+	<body>
+	<script type="text/javascript" src="/mouseCameraMove.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/socketFunctions.js"></script>
+	<script type="text/javascript" src="/imgToMap.js"></script>
+	<script type="text/javascript" src="/pathfinding-browser.min.js"></script>
+	<script type="text/javascript" src="/navData.js"></script>
+	<script type="text/javascript" src="/mouseMove.js"></script>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+	<script type="text/javascript">
+		test("QUnit is working", function() {
+			ok(true);
+		});
+		asyncTest("Navigation Data Generation", 2, function() {
+			LoadImageDataPixelMap("/level1NavTex.png",function(navData) {
+				start();
+				ok(navData, "Converted image to navData");
+				//stop();
+				setupNavData(navData, 500, 500, function(a,b){
+					start();
+					ok(a&&b, "Set up navData");
+				});
+			});
+		});
+	</script>
+	</body>
+</html>

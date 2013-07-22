@@ -37,7 +37,11 @@ io.sockets.on('connection', function(socket) {
 	
 	socket.on('disconnect', function() {
 		console.log(socket.id+" has disconnected.");
-		game.disconnected(socket, io);
+		try {
+			game.disconnected(socket, io);
+		} catch (e) {
+			console.warn("FATAL ERROR: "+e);
+		}
 	});
 });
 game.startSpawningZombies(io);
