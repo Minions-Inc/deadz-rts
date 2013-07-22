@@ -44,8 +44,11 @@ io.sockets.on('connection', function(socket) {
 			console.warn("FATAL ERROR: "+e);
 		}
 	});
-	socket.on('ping', function(data) {
-		socket.emit('pong', data);
+	socket.on('ping1', function() {
+		socket.emit('pong1');
+	});
+	socket.on('ping2', function(data) {
+		socket.emit('pong2', data);
 	});
 });
 game.startSpawningZombies(io);
