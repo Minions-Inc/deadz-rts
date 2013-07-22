@@ -26,14 +26,21 @@
 		test("QUnit is working", function() {
 			ok(true);
 		});
+		asyncTest("Socket connection", function() {
+			socket.on('connect', function() {
+				start();
+				ok(socket.socket.connected, "Connected");
+			});
+		});
 		asyncTest("Navigation Data Generation", 2, function() {
 			LoadImageDataPixelMap("/level1NavTex.png",function(navData) {
 				start();
 				ok(navData, "Converted image to navData");
 				//stop();
-				setupNavData(navData, 500, 500, function(a,b){
-					start();
+				setupNavData(navData.toMatrix(), 500, 500, function(a,b){
+					//start();
 					ok(a&&b, "Set up navData");
+					//start();
 				});
 			});
 		});
