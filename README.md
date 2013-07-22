@@ -38,4 +38,5 @@ To do this:
     ```
 
 5. Go to http://localhost/
-6. Profit!
+6. ???
+7. Profit!
