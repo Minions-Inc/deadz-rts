@@ -17,25 +17,25 @@ To do this:
 1. Install node.js - http://nodejs.org/
 2. Install required modules for node using cmd/bash:
 
-    ```bash
-    $ npm install express socket.io
-    ```
+	```bash
+	$ npm install express socket.io
+	```
 
 3. Clone the repository:
 
-    ```bash
-    $ git clone https://github.com/Silvea12/deadz-rts.git
-    $ cd deadz-rts
-    $ git submodule update --init
-    ```
+	```bash
+	$ git clone https://github.com/Silvea12/deadz-rts.git
+	$ cd deadz-rts
+	$ git submodule update --init
+	```
 
 4. Run the game:
 
-    ```bash
-    $ node main
-    or
-    $ node main [port]
-    ```
+	```bash
+	$ node main
+	or
+	$ node main [port]
+	```
 
 5. Go to http://localhost/
 6. ???
