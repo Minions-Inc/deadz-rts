@@ -18,10 +18,14 @@ Milestone tasks
 * [ ] Building placement
 * [ ] Destructable buildings
 * [ ] Resource collection
+* [ ] Resource sharing between units
+* [ ] Resource storing in buildings
+* [ ] Grace period (set-up time)
 
 Less important tasks
 --------------------
 
+* [ ] Create textures
 * [ ] Add character animations
 * [ ] Balance speed of units
 * [ ] Make zombie spawn points (instead of tracked object position)
