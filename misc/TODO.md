@@ -4,6 +4,8 @@ To do:
 Milestone tasks
 ---------------
 
+#### Core Game Mechanics
+
 * [x] Create Engine
 * [x] Networking
 * [x] 3D rendering
@@ -20,6 +22,9 @@ Milestone tasks
 * [ ] Resource collection
 * [ ] Resource sharing between units
 * [ ] Resource storing in buildings
+
+#### Gameplay Elements
+
 * [ ] Grace period (set-up time)
 
 Less important tasks
