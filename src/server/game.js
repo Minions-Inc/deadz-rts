@@ -35,8 +35,8 @@ function pickRandomProperty(obj) {
     var result;
     var count = 0;
     for (var prop in obj)
-        if (Math.random() < 1/++count)
-           result = prop;
+    	if (Math.random() < 1/++count && obj.hasOwnProperty(prop))
+			result = prop;
     return result;
 }
 
@@ -113,7 +113,7 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, speed, na
 
 function zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, navName, io) {
 	try {
-		if(object == undefined || object.typeof !== "object") {
+		if(object == undefined || typeof(object) !== "object") {
 			delete object;
 			return;
 		}
