@@ -5,21 +5,37 @@ socket.on('connect', function() {
 	document.addEventListener( 'keydown', onKeyDown, false );
 	document.addEventListener( 'keyup', onKeyDown, false );
 });
-socket.on('newPlayer', function(data) {
-	addPlayer(data.name, data.model, data.pos);
+socket.on('loadModels', function(models) {
+	console.log(models);
+	loadModel(models, 0);
 });
-socket.on('movePlayer', function(data) {
-	if(objects[data.name] == null)
+function loadModel(models, i) {
+	loader.load(models[i]+".js", function(geometry, mats) {
+		modelCache.set(models[i], {geometry: geometry, mats:mats});
+		if(i==models.length-1)
+			setupNetwork();
+		else
+			loadModel(models, i+1);
+	});
+}
+function setupNetwork() {
+	socket.on('newPlayer', function(data) {
 		addPlayer(data.name, data.model, data.pos);
-	else
-		objects[data.name].position = new THREE.Vector3(data.pos.x,data.pos.y,data.pos.z); if(new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0) objects[data.name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
-	//console.log(objects[data.name])
-	//if(new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0)
-    //    objects[data.name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
-});
-socket.on('removePlayer', function(data) {
-	remObj(data.name);
-});
+	});
+	socket.on('movePlayer', function(data) {
+		if(objects[data.name] == null)
+			addPlayer(data.name, data.model, data.pos);
+		else
+			objects[data.name].position = new THREE.Vector3(data.pos.x,data.pos.y,data.pos.z); if(new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0) objects[data.name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
+		//console.log(objects[data.name])
+		//if(new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0)
+	    //    objects[data.name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data.name].position.x,1000,objects[data.name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
+	});
+	socket.on('removePlayer', function(data) {
+		remObj(data.name);
+	});
+	socket.emit('loadedModels', {name:playerName, model:"HumanBase"});
+}
 
 function addPlayer(name, model, pos) {
 	//addCube(name, position);

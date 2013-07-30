@@ -4,3 +4,6 @@
 [submodule "PathFinding.js"]
 	path = src/lib/pathfinding
 	url = https://github.com/qiao/PathFinding.js.git
+[submodule "MicroCache"]
+	path = src/lib/MicroCache
+	url = https://github.com/jeromeetienne/MicroCache.js.git

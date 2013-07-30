@@ -13,6 +13,7 @@ app.use(express.static(__dirname+'/client/js'));
 app.use(express.static(__dirname+'/client/blender'));
 app.use(express.static(__dirname+'/client/img'));
 app.use(express.static(__dirname+'/lib/pathfinding/lib'));
+app.use(express.static(__dirname+'/lib/MicroCache'));
 app.use(express.static(__dirname+'/lib/qunit'));
 app.use(express.static(__dirname+'/client/lib/threejs/build'));
 
@@ -21,6 +22,9 @@ io.sockets.on('connection', function(socket) {
 	
 	socket.on('newPlayer', function(data) {
 		game.newPlayer(socket, io, data);
+	});
+
+	socket.on('loadedModels', function(data) {
 		game.sendPlayers(socket, io, data);
 	});
 

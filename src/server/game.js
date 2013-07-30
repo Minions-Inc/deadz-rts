@@ -3,7 +3,8 @@ var objects = {},
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
-	zombieID = 0;
+	zombieID = 0,
+	requiredModels = ["HumanBase","zombie"];
 
 function startSpawningZombies(io) {
 	setInterval(function() {
@@ -44,6 +45,7 @@ function newPlayer(socket, io, data) {
 	console.log(socket.id+" sent via newPlayer:");
 	console.log(data);
 	objects[socket.id] = {name: data.name, model:data.model, pos:{x:250,y:0,z:250}};
+	socket.emit("loadModels", requiredModels);
 	io.sockets.emit('newPlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos});
 }
 

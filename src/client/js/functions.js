@@ -1,26 +1,37 @@
 var size = 0;
 var objects = {};
+var modelCache = new MicroCache();
 var camera, scene, loader, pointLight, renderer;
 var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04, mouseDelta = 10;
 var windowHalfX, windowHalfY;
 
 function addObj(name, loc, callback) {
 	if(objects[name] == null) {
-		loader.load(loc, function(geometry, mats) {
-			objects[name] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(mats));
-			//objects[name] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
-			//objects[name] = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({wireframe:false}));
+		if(!modelCache.contains(loc)) {
+			loader.load(loc, function(geometry, mats) {
+				modelCache.set(loc, {geometry:geometry, mats:mats});
+				objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(modelCache.get(loc).mats));
+				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(mats));
+				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
+				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({wireframe:false}));
+				size++;
+				scene.add(objects[name]);
+				//objects[name].position = pos;
+				// var pos = 0.5;
+				// for(var obj in objects) {
+				// 	objects[obj].position.x = (pos-(size/2))*2
+				// 	pos++;
+				// }
+				if (typeof callback === "function")
+					callback(objects[name]);
+			});
+		} else {
+			objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(modelCache.get(loc).mats));
 			size++;
 			scene.add(objects[name]);
-			//objects[name].position = pos;
-			// var pos = 0.5;
-			// for(var obj in objects) {
-			// 	objects[obj].position.x = (pos-(size/2))*2
-			// 	pos++;
-			// }
 			if (typeof callback === "function")
 				callback(objects[name]);
-		});
+		}
 	} else {
 		console.error("ERROR: Object with name "+name+" already exists!");
 	}

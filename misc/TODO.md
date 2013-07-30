@@ -13,6 +13,7 @@ Milestone tasks
 * [x] Click-to-move
 * [x] Pathfinding
 * [x] Basic zombie AI
+* [X] Cache objects (instead of loading them each time it is created)
 * [ ] Swarm AI
 * [ ] Unit selection
 * [ ] Health
