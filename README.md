@@ -1,7 +1,7 @@
 DeadZ RTS
 =========
 
-A multiplayer RTS made with three.js, PathFinding.js, node.js, socket.io and express.
+A multiplayer RTS made with three.js, PathFinding.js, MicroCache.js, node.js, socket.io and express.
 
 PLEASE NOTE - INCOMPLETE, MAY OR MAY NOT FUNCTION PROPERLY!
 
