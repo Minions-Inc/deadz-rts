@@ -7,6 +7,7 @@ var cmdArgs = process.argv.splice(2),
 	game = require('./server/game.js');
 
 io.set('log level', 2);
+io.set('close timeout', 5);
 
 app.use(express.static(__dirname+'/client/html'));
 app.use(express.static(__dirname+'/client/js'));
@@ -56,3 +57,23 @@ io.sockets.on('connection', function(socket) {
 	});
 });
 game.startSpawningZombies(io);
+updateSceneObjects();
+
+
+
+function updateSceneObjects() {
+	var objsToSend = [];
+	for(var i in game.objects) {
+		if(game.objects.hasOwnProperty(i)) {
+			objsToSend[objsToSend.length] = game.objects[i];
+		}
+	}
+	for(var i in game.zombies) {
+		if(game.zombies.hasOwnProperty(i)) {
+			objsToSend[objsToSend.length] = game.zombies[i];
+		}
+	}
+	io.sockets.emit('updateObjects', objsToSend)
+		//io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
+	setTimeout(updateSceneObjects, 500);
+}

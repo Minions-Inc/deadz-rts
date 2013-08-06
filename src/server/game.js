@@ -66,7 +66,7 @@ function clickPos(socket, io, data) {
 function disconnected(socket, io) {
 	io.sockets.emit('removePlayer', {name: objects[socket.id].name});
 	for (var z in zombies) {
-		if(zombies[z].followedObj.name == objects[socket.id].name) {
+		if(zombies.hasOwnProperty(z) && zombies[z].followedObj.name == objects[socket.id].name) {
 			io.sockets.emit('removePlayer', {name: zombies[z].name});
 			delete zombies[z];
 		}
@@ -97,10 +97,14 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, speed, na
 	            };
 	        }
 	    }
+	    if(objects[socket.id] == undefined || typeof(objects[socket.id]) !== "object") {
+			delete objNav[navName];
+			return;
+		}
 	    var steps = (objNav[navName].path.length>steps) ? steps : objNav[navName].path.length-1;
 	    object.pos.x=objNav[navName].path[steps][0]*moveMult;
 	    object.pos.z=objNav[navName].path[steps][1]*moveMult;
-	    io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
+	    //io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
 	    objNav[navName].path.shift();
 	    if(objNav[navName].path.length<1) {
 	        delete objNav[navName];
@@ -125,7 +129,7 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, nav
 	    step = (objNav[navName].path.length > 1) ? steps : 0;
     	object.pos.x=objNav[navName].path[step][0]*moveMult;
     	object.pos.z=objNav[navName].path[step][1]*moveMult;
-	    io.sockets.emit('movePlayer', {name: object.name, model: object.model, pos: object.pos})
+	    //io.sockets.emit('movePlayer', {name: object.name, model: object.model, pos: object.pos})
 	    objNav[navName].path.shift();
 	    //if(typeof(objNav[navName]) !== "undefined") {
     	setTimeout(function() {zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, navName, io);},speed);
@@ -139,6 +143,7 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, speed, nav
 module.exports = {
 	objects: objects,
 	startSpawningZombies: startSpawningZombies,
+	zombies: zombies,
 	newPlayer: newPlayer,
 	movePlayer: movePlayer,
 	clickPos: clickPos,

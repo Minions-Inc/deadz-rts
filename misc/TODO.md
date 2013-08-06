@@ -13,7 +13,7 @@ Milestone tasks
 * [x] Click-to-move
 * [x] Pathfinding
 * [x] Basic zombie AI
-* [X] Cache objects (instead of loading them each time it is created)
+* [x] Cache objects (instead of loading them each time it is created)
 * [ ] Swarm AI
 * [ ] Unit selection
 * [ ] Health
@@ -51,7 +51,7 @@ Tasks to do over time
 Things to fix
 -------------
 
-* [ ] Fix zombies not despawning when player disconnected
+* [x] Fix zombies not despawning when player disconnected
 * [ ] Allow zombies to change target
 * [ ] Allow for multiple levels to be loaded
 * [ ] Stress test server for latency, stability and data integrity (networking)

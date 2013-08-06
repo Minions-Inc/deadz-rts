@@ -57,3 +57,10 @@ Used Software:
 Other notes:
 * Josh@xnetcode.com - Did Unity3D Presentation
 * Skype: joshuacarpeggiani@gmail.com - Did Unity3D Presentation
+* Microcache/WebGL Monitor:
+  - http://learningthreejs.com/blog/2011/09/16/performance-caching-material/
+  - http://benvanik.github.io/WebGL-Inspector/
+
+
+http://arcade.equestriagaming.com/2012/05/waiting-is-magic.html - unrelated
+http://www.22bytes.com/2013/07/rainbos-boot-animation.html - unrelated
