@@ -14,7 +14,6 @@ Milestone tasks
 * [x] Pathfinding
 * [x] Basic zombie AI
 * [x] Cache objects (instead of loading them each time it is created)
-* [ ] Set up multi-threading via the child_process module (server only) to do the heavy processing (to attempt to remedy latency)
 * [ ] Swarm AI
 * [ ] Unit selection
 * [ ] Health
@@ -32,6 +31,7 @@ Milestone tasks
 Less important tasks
 --------------------
 
+* [ ] Fix height detection (optimise raytracing or predefine height)
 * [ ] Create textures
 * [ ] Add character animations
 * [ ] Balance speed of units
