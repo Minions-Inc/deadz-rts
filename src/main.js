@@ -7,7 +7,9 @@ var cmdArgs = process.argv.splice(2),
 	game = require('./server/game.js');
 
 io.set('log level', 2);
-io.set('close timeout', 5);
+io.set('close timeout', 30);
+io.set('heartbeat timeout', 30);
+io.set('heartbeat interval', 15);
 
 app.use(express.static(__dirname+'/client/html'));
 app.use(express.static(__dirname+'/client/js'));

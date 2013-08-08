@@ -59,6 +59,7 @@ function setupNetwork() {
 			remObj(i);
 			console.log("Removed "+i);
 		}
+		//setInterval(function(){objects[playerName].position.x+=10}, 1000)
 		console.log(currObjs);
 	});
 	socket.emit('loadedModels', {name:playerName, model:"HumanBase"});
