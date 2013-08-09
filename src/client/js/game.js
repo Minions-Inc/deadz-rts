@@ -35,16 +35,16 @@ function setupNetwork() {
 		remObj(data.name);
 	});
 	socket.on('updateObjects', function(data) {
-		console.log("Recieved updateObjects!");
-		console.log(data);
+		//console.log("Recieved updateObjects!");
+		//console.log(data);
 		for(var i in data) {
 			if(objects.hasOwnProperty(data[i].name)) {
 				//objects[data[i].name].position = new THREE.Vector3(data[i].pos.x,data[i].pos.y,data[i].pos.z); if(new THREE.Raycaster(new THREE.Vector3(objects[data[i].name].position.x,1000,objects[data[i].name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0) objects[data[i].name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data[i].name].position.x,1000,objects[data[i].name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
 				objects[data[i].name].position = new THREE.Vector3(data[i].pos.x,data[i].pos.y,data[i].pos.z);
-				console.log("Moved "+data[i].name);
+				//console.log("Moved "+data[i].name);
 			} else {
 				addPlayer(data[i].name, data[i].model, data[i].pos);
-				console.log("Added "+data[i].name);
+				//console.log("Added "+data[i].name);
 			}
 		}
 		var currObjs = new Object();
@@ -58,10 +58,10 @@ function setupNetwork() {
 		}
 		for(var i in currObjs) {
 			remObj(i);
-			console.log("Removed "+i);
+			//console.log("Removed "+i);
 		}
 		//setInterval(function(){objects[playerName].position.x+=10}, 1000)
-		console.log(currObjs);
+		//console.log(currObjs);
 	});
 	socket.emit('loadedModels', {name:playerName, model:"HumanBase"});
 }

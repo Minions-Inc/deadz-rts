@@ -10,7 +10,10 @@ function addObj(name, loc, callback) {
 		if(!modelCache.contains(loc)) {
 			loader.load(loc, function(geometry, mats) {
 				modelCache.set(loc, {geometry:geometry, mats:mats});
-				objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(modelCache.get(loc).mats));
+				var mats = [];
+				for (var i=0;i<modelCache.get(loc).mats.length;i++)
+					mats.push(modelCache.get(loc).mats[i].clone());
+				objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(mats));
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(mats));
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({wireframe:false}));
@@ -26,7 +29,10 @@ function addObj(name, loc, callback) {
 					callback(objects[name]);
 			});
 		} else {
-			objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(modelCache.get(loc).mats));
+			var mats = [];
+			for (var i=0;i<modelCache.get(loc).mats.length;i++)
+				mats.push(modelCache.get(loc).mats[i].clone());
+			objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(mats));
 			size++;
 			scene.add(objects[name]);
 			if (typeof callback === "function")

@@ -15,7 +15,7 @@ Milestone tasks
 * [x] Basic zombie AI
 * [x] Cache objects (instead of loading them each time it is created)
 * [ ] Swarm AI
-* [ ] Unit selection
+* [x] Unit selection (selected object is selectedObj variable)
 * [ ] Health
 * [ ] Reproduction of units
 * [ ] Building placement
