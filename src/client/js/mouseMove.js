@@ -31,8 +31,9 @@ function onDocumentMouseDown( event ) {
 		}
 	} else if(event.button == 0) {
 		var objsToFind = [];
+		var oldObj = selectedObj;
 		for(var i in objects)
-			if(objects.hasOwnProperty(i) && i.indexOf("Player ") == 0)
+			if(objects.hasOwnProperty(i) && /^(Hero|Commander|Minion)/.test(i))
 				objsToFind.push(objects[i]);
 		var intersects = raycaster.intersectObjects(objsToFind, false);
 		if(intersects.length > 0) {
@@ -40,9 +41,23 @@ function onDocumentMouseDown( event ) {
 			if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0.4;
 			selectedObj = intersects[0].object;
 			selectedObj.material.materials[0].color.b = 0;
+			var type = selectedObj.name.match(/^(Hero|Commander|Minion)/)[0];
+			type = type == "Minion" ? "Minions" : type == "Commander" ? "Commanders" : type;
+			if(oldObj != null) {
+				var oldType = oldObj.name.match(/^(Hero|Commander|Minion)/)[0];
+				oldType = oldType == "Minion" ? "Minions" : oldType == "Commander" ? "Commanders" : oldType;
+				socket.emit('selectedObj',{name: selectedObj.name, type: type, oldName: oldObj.name, oldType: oldType});
+			} else {
+				socket.emit('selectedObj',{name: selectedObj.name, type: type});
+			}
 		} else {
 			if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0.4;
-			selectedObj = undefined;	
+			selectedObj = undefined;
+			if(oldObj != null) {
+				var oldType = oldObj.name.match(/^(Hero|Commander|Minion)/)[0];
+				oldType = oldType == "Minion" ? "Minions" : oldType == "Commander" ? "Commanders" : oldType;
+				socket.emit('selectedObj',{oldName: oldObj.name, oldType: oldType});
+			}
 		}
 	}
 	return false;

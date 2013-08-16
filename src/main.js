@@ -23,20 +23,21 @@ app.use(express.static(__dirname+'/client/lib/threejs/build'));
 io.sockets.on('connection', function(socket) {
 	console.log("Got new connection "+socket.id+" from IP: "+socket.handshake.address.address);
 	
-	socket.on('newPlayer', function(data) {
-		game.newPlayer(socket, io, data);
+	socket.on('newPlayer', function() {
+		//game.newPlayer(socket, io);
+		socket.emit("loadModels", game.requiredModels);
 	});
 
-	socket.on('loadedModels', function(data) {
-		game.sendPlayers(socket, io, data);
-	});
-
-	socket.on('movePlayer', function(data) {
-		game.movePlayer(socket, io, data);
+	socket.on('loadedModels', function() {
+		game.newPlayer(socket, io);
 	});
 
 	socket.on('clickPos', function(data) {
 		game.clickPos(socket, io, data);
+	});
+
+	socket.on('selectedObj', function(data) {
+		game.selectedObj(socket, io, data);
 	});
 	
 	socket.on('eval', function(data) {
@@ -67,12 +68,26 @@ function updateSceneObjects() {
 	var objsToSend = [];
 	for(var i in game.objects) {
 		if(game.objects.hasOwnProperty(i)) {
-			objsToSend[objsToSend.length] = game.objects[i];
+			for(var j in game.objects[i].Characters.Minions) {
+				if(game.objects[i].Characters.Minions.hasOwnProperty(j)) {
+					objsToSend.push(game.objects[i].Characters.Minions[j]);
+				}
+			}
+			for(var j in game.objects[i].Characters.Commanders) {
+				if(game.objects[i].Characters.Commanders.hasOwnProperty(j)) {
+					objsToSend.push(game.objects[i].Characters.Commanders[j]);
+				}
+			}
+			for(var j in game.objects[i].Characters.Hero) {
+				if(game.objects[i].Characters.Hero.hasOwnProperty(j)) {
+					objsToSend.push(game.objects[i].Characters.Hero[j]);
+				}
+			}
 		}
 	}
 	for(var i in game.zombies) {
 		if(game.zombies.hasOwnProperty(i)) {
-			objsToSend[objsToSend.length] = game.zombies[i];
+			objsToSend.push(game.zombies[i]);
 		}
 	}
 	io.sockets.emit('updateObjects', objsToSend)

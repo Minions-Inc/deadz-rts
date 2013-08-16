@@ -14,6 +14,7 @@ function addObj(name, loc, callback) {
 				for (var i=0;i<modelCache.get(loc).mats.length;i++)
 					mats.push(modelCache.get(loc).mats[i].clone());
 				objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(mats));
+				objects[name].name = name;
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(mats));
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial());
 				//objects[name] = new THREE.Mesh(geometry, new THREE.MeshNormalMaterial({wireframe:false}));
@@ -33,6 +34,7 @@ function addObj(name, loc, callback) {
 			for (var i=0;i<modelCache.get(loc).mats.length;i++)
 				mats.push(modelCache.get(loc).mats[i].clone());
 			objects[name] = new THREE.Mesh(modelCache.get(loc).geometry, new THREE.MeshFaceMaterial(mats));
+			objects[name].name = name;
 			size++;
 			scene.add(objects[name]);
 			if (typeof callback === "function")

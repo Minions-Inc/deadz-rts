@@ -16,6 +16,7 @@ Milestone tasks
 * [x] Cache objects (instead of loading them each time it is created)
 * [ ] Swarm AI
 * [x] Unit selection (selected object is selectedObj variable)
+	* [x] Rewrite entire object naming system to allow selected units to be stored and used by the server
 * [ ] Health
 * [ ] Reproduction of units
 * [ ] Building placement
