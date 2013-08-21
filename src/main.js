@@ -60,6 +60,7 @@ io.sockets.on('connection', function(socket) {
 	});
 });
 game.startSpawningZombies(io);
+setInterval(game.attackCheck, 500);
 updateSceneObjects();
 
 

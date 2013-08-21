@@ -160,6 +160,51 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
 	}
 }
 
+function attackCheck() {
+	var zombieCol = [];
+	var objCol = [];
+	for(var i in zombies) {
+		if(zombies.hasOwnProperty(i)) {
+			zombieCol.push(zombies[i]);
+		}
+	}
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i) && objects[i].hasOwnProperty("Characters")) {
+			for(var j in objects[i].Characters.Minions) {
+				if(objects[i].Characters.Minions.hasOwnProperty(j)) {
+					objCol.push([objects[i].Characters.Minions[j], i, "Minions"]);
+				}
+			}
+			for(var j in objects[i].Characters.Commanders) {
+				if(objects[i].Characters.Commanders.hasOwnProperty(j)) {
+					objCol.push([objects[i].Characters.Commanders[j], i, "Commanders"]);
+				}
+			}
+			for(var j in objects[i].Characters.Hero) {
+				if(objects[i].Characters.Hero.hasOwnProperty(j)) {
+					objCol.push([objects[i].Characters.Hero[j], i, "Hero"]);
+				}
+			}
+		}
+	}
+	for(var i=0;i<zombieCol.length;i++) {
+		for(var j=0;j<objCol.length;j++) {
+			if(Math.abs(zombieCol[i].pos.x - objCol[j][0].pos.x) > (zombieCol[i].attackRadius + objCol[j][0].collisionRadius) || Math.abs(zombieCol[i].pos.y - objCol[j][0].pos.y) > (zombieCol[i].attackRadius + objCol[j][0].collisionRadius)) {
+				break;
+			}
+			var distance = ((zombieCol[i].pos.x - objCol[j][0].pos.x) * (zombieCol[i].pos.x - objCol[j][0].pos.x)) + ((zombieCol[i].pos.y - objCol[j][0].pos.y) * (zombieCol[i].pos.y - objCol[j][0].pos.y));
+			if(distance < (zombieCol[i].attackRadius + objCol[j][0].collisionRadius)) {
+				objCol[j][0].health -= zombieCol[i].attackPower;
+				console.log(objCol[j][0].name + " was hit! Health: " + objCol[j][0].health);
+				if(objCol[j][0].health < 1) {
+					console.log(objCol[j][0].name + " has died!");
+					delete objects[objCol[j][1]].Characters[objCol[j][2]][objCol[j][0].name];
+				}
+			}
+		}
+	}
+}
+
 module.exports = {
 	objects: objects,
 	startSpawningZombies: startSpawningZombies,
@@ -168,5 +213,6 @@ module.exports = {
 	selectedObj: selectedObj,
 	clickPos: clickPos,
 	disconnected: disconnected,
+	attackCheck: attackCheck,
 	requiredModels: requiredModels
 };

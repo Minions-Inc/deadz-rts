@@ -3,6 +3,9 @@ function Character() {
 	this.health = 0;
 	this.speed = 0;
 	this.selected = false;
+	this.attackPower = 1;
+	this.attackRadius = 1;
+	this.collisionRadius = 1;
 	/*this.pos = {
 		x: 0,
 		y: 11.7,
