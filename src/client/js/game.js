@@ -27,6 +27,8 @@ function setupNetwork() {
 			if(objects.hasOwnProperty(data[i].name)) {
 				//objects[data[i].name].position = new THREE.Vector3(data[i].pos.x,data[i].pos.y,data[i].pos.z); if(new THREE.Raycaster(new THREE.Vector3(objects[data[i].name].position.x,1000,objects[data[i].name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain).length != 0) objects[data[i].name].position.y = 1000-new THREE.Raycaster(new THREE.Vector3(objects[data[i].name].position.x,1000,objects[data[i].name].position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
 				objects[data[i].name].position = new THREE.Vector3(data[i].pos.x,data[i].pos.y,data[i].pos.z);
+				objects[data[i].name].owner = (data[i].hasOwnProperty("owner")) ? data[i].owner : null;
+				objects[data[i].name].health = (data[i].hasOwnProperty("health")) ? data[i].health : null;
 				//console.log("Moved "+data[i].name);
 			} else {
 				addPlayer(data[i].name, data[i].model, data[i].pos);

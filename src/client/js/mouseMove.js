@@ -33,7 +33,7 @@ function onDocumentMouseDown( event ) {
 		var objsToFind = [];
 		var oldObj = selectedObj;
 		for(var i in objects)
-			if(objects.hasOwnProperty(i) && /^(Hero|Commander|Minion)/.test(i))
+			if(objects.hasOwnProperty(i) && /^(Hero|Commander|Minion)/.test(i) && objects[i].owner == socket.socket.sessionid)
 				objsToFind.push(objects[i]);
 		var intersects = raycaster.intersectObjects(objsToFind, false);
 		if(intersects.length > 0) {
