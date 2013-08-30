@@ -36,7 +36,9 @@ Less important tasks
 * [ ] Create textures
 * [ ] Add character animations
 * [ ] Balance speed of units
-* [ ] Make zombie spawn points (instead of tracked object position)
+* [x] Make zombie spawn points (instead of tracked object position)
+	* [ ] Refine zombie spawn points
+* [ ] Make player spawn points
 * [ ] Add background image
 	* [ ] Make background image scroll with camera
 

@@ -4,7 +4,12 @@ var objects = {},
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
-	requiredModels = ["HumanBase","zombie"];
+	requiredModels = ["HumanBase","zombie"],
+	zombieSpawn = [
+		{x:250,y:11.7,z:250},
+		{x:100,y:11.7,z:250},
+		{x:250,y:11.7,z:100}
+	];
 
 function startSpawningZombies(io) {
 	setInterval(function() {
@@ -17,7 +22,8 @@ function startSpawningZombies(io) {
 				}
 				if (objToFollow == undefined) throw new Error("Failed to get a random object after 10 attempts!");
 				var zombie = new objTypes.Zombie(objToFollow);
-				zombie.pos = zombie.followedObject.pos.clone();
+				//zombie.pos = zombie.followedObject.pos.clone();
+				zombie.pos = zombieSpawn[Math.floor(Math.random()*zombieSpawn.length)];
 				//zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
 				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
 				zombies[zombie.name] = zombie;
