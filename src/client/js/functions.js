@@ -169,11 +169,12 @@ windowHalfY = window.innerHeight / 2;
 window.addEventListener( 'resize', onWindowResize, false );
 
 addObj("terrain","level1.js",function(a){
-	a.scale.x=2;
-	a.scale.y=2;
-	a.scale.z=2;
-	a.position.x=-0.5;
-	a.position.z=0.5;
+	a.scale.x=2.125;
+	a.scale.y=2.125;
+	//a.scale.y=0.1;
+	a.scale.z=2.125;
+	a.position.x=-4.5;
+	a.position.z=-4.5;
 });
 
 /*var pMat = new THREE.ParticleBasicMaterial({size:1});
@@ -188,6 +189,7 @@ for(var i=0; i<level1NavData.length; i++) {
 }
 
 var pSystem = new THREE.ParticleSystem(particles, pMat);
+pSystem.position.y=-3.8;
 
 scene.add(pSystem);*/
 
