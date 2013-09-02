@@ -71,8 +71,12 @@ function newPlayer(socket, io) {
 }
 
 function clickPos(socket, io, data) {
-	if(objects[socket.id].selectedObj.name != "")
-		setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
+	try {
+		if(objects[socket.id].selectedObj.name != "")
+			setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
+	} catch(e) {
+		console.warn("FATAL CLICKPOS ERROR: "+e.toString());
+	}
 }
 
 function selectedObj(socket, io, data) {
@@ -137,7 +141,7 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, socket, i
 	    }
     } catch (e) {
     		console.warn("FATAL ERROR: "+e.toString());
-    		delete objNav[object.navName];
+    		if(object.navName != undefined) delete objNav[object.navName];
 	}
 }
 
@@ -161,8 +165,8 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
 	    //}
     } catch (e) {
 		console.warn("FATAL ERROR: "+e.toString());
-		delete objNav[object.navName];
-		delete zombies[object.name];
+		if(object.navName != undefined) delete objNav[object.navName];
+		if(object.name != undefined) delete zombies[object.name];
 	}
 }
 
