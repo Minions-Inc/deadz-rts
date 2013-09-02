@@ -93,5 +93,5 @@ function updateSceneObjects() {
 	}
 	io.sockets.emit('updateObjects', objsToSend)
 		//io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
-	setTimeout(updateSceneObjects, 500);
+	setTimeout(updateSceneObjects, 100);
 }

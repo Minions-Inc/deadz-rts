@@ -23,7 +23,7 @@ function Minion(owner) {
 	Character.call(this);
 	this.name = "Minion" + this.name;
 	this.health = 100;
-	this.speed = 1;
+	this.speed = 0.125;
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
@@ -35,7 +35,7 @@ function Commander(owner) {
 	Character.call(this);
 	this.name = "Commander" + this.name;
 	this.health = 250;
-	this.speed = 1.5;
+	this.speed = 0.25;
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
@@ -47,7 +47,7 @@ function Hero(owner) {
 	Character.call(this);
 	this.name = "Hero" + this.name;
 	this.health = 500;
-	this.speed = 2;
+	this.speed = 0.5;
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
@@ -59,7 +59,7 @@ function Zombie(followedObject) {
 	Character.call(this);
 	this.name = "Zombie" + this.name;
 	this.health = 25;
-	this.speed = 0.25;
+	this.speed = 0.0625;
 	this.model = "zombie";
 	this.followedObject = followedObject;
 	this.timeToLive = 100;

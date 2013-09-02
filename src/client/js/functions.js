@@ -172,8 +172,8 @@ addObj("terrain","level1.js",function(a){
 	a.scale.x=2;
 	a.scale.y=2;
 	a.scale.z=2;
-	a.position.x=-8;
-	a.position.z=-2;
+	a.position.x=0;
+	a.position.z=-4;
 });
 camera.position=new THREE.Vector3(70,15,18);
 camera.rotation.x=-1;

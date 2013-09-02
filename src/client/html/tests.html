@@ -79,7 +79,17 @@
 			}
 
 			module("Calculation");
-			test("Navigation Data Generation", 2, function() {
+			test("Navigation Data Generation - 128x128", 2, function() {
+				stop();
+				LoadImageDataPixelMap("/level1NavTex1.png",function(navData) {
+					ok(navData, "Converted image to navData");
+					setupNavData(navData.toMatrix(), 128, 128, function(a,b){
+						ok(a&&b, "Set up navData");
+						start();
+					});
+				});
+			});
+			test("Navigation Data Generation - 500x500", 2, function() {
 				stop();
 				LoadImageDataPixelMap("/level1NavTex.png",function(navData) {
 					ok(navData, "Converted image to navData");
