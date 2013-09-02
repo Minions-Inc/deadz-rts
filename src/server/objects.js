@@ -6,12 +6,13 @@ function Character() {
 	this.attackPower = 1;
 	this.attackRadius = 1;
 	this.collisionRadius = 1;
+	this.scale = {x:0.5,y:0.5,z:0.5};
 	/*this.pos = {
 		x: 0,
 		y: 11.7,
 		z: 0
 	};*/
-	this.pos = {x:250,y:11.7,z:250};
+	this.pos = {x:64,y:3,z:64};
 	this.model = "";
 	this.navName = this.name + "Nav";
 

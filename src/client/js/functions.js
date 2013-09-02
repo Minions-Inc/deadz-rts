@@ -132,10 +132,10 @@ function render() {
 		camera.position.z += mouseEdgeSpeed;
 		camera.position.x += camera.rotation.y*mouseEdgeSpeed;
 	}
-	if(camera.position.x < 50) camera.position.x=50;
-	if(camera.position.x > 500) camera.position.x=500;
-	if(camera.position.z < 50) camera.position.z=50;
-	if(camera.position.z > 500) camera.position.z=500;
+	if(camera.position.x < 10) camera.position.x=10;
+	if(camera.position.x > 135) camera.position.x=135;
+	if(camera.position.z < 10) camera.position.z=10;
+	if(camera.position.z > 135) camera.position.z=135;
 	renderer.render(scene, camera);
 }
 
@@ -169,13 +169,13 @@ windowHalfY = window.innerHeight / 2;
 window.addEventListener( 'resize', onWindowResize, false );
 
 addObj("terrain","level1.js",function(a){
-	a.scale.x=7.75;
-	a.scale.y=7.75;
-	a.scale.z=7.75;
-	a.position.x=2;
-	a.position.z=-10;
+	a.scale.x=2;
+	a.scale.y=2;
+	a.scale.z=2;
+	a.position.x=-8;
+	a.position.z=-2;
 });
-camera.position=new THREE.Vector3(280,50,65)
+camera.position=new THREE.Vector3(70,15,18);
 camera.rotation.x=-1;
 camera.rotation.y=0.2;
 camera.rotation.z=0.2;

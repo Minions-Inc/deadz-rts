@@ -1,14 +1,14 @@
 var objects = {},
 	objTypes = require('./objects.js'),
-	navData = require('../client/js/navData.js'),
+	navData = require('../client/js/navDataSmall.js'),
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
 	requiredModels = ["HumanBase","zombie"],
 	zombieSpawn = [
-		{x:250,y:11.7,z:250},
-		{x:100,y:11.7,z:250},
-		{x:250,y:11.7,z:100}
+		{x:64,y:3,z:64},
+		{x:16,y:3,z:64},
+		{x:64,y:3,z:16}
 	];
 
 function startSpawningZombies(io) {
@@ -25,7 +25,7 @@ function startSpawningZombies(io) {
 				//zombie.pos = zombie.followedObject.pos.clone();
 				zombie.pos = zombieSpawn[Math.floor(Math.random()*zombieSpawn.length)];
 				//zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
-				setupNavData(navData.level1NavData, 500, 500, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
+				setupNavData(navData.level1NavData, 128, 128, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
 				zombies[zombie.name] = zombie;
 			} else {
 				console.log("Tried to spawn a zombie when no players had connected!");
@@ -72,7 +72,7 @@ function newPlayer(socket, io) {
 
 function clickPos(socket, io, data) {
 	if(objects[socket.id].selectedObj.name != "")
-		setupNavData(navData.level1NavData, 500, 500, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
+		setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
 }
 
 function selectedObj(socket, io, data) {

@@ -1,5 +1,5 @@
 var mouseEdgeSize = 50;
-var mouseEdgeSpeed = 1;
+var mouseEdgeSpeed = 0.25;
 var scrollingVert = 0;
 var scrollingHoriz = 0;
 
