@@ -172,12 +172,28 @@ addObj("terrain","level1.js",function(a){
 	a.scale.x=2;
 	a.scale.y=2;
 	a.scale.z=2;
-	a.position.x=0;
-	a.position.z=-4;
+	a.position.x=-0.5;
+	a.position.z=0.5;
 });
+
+/*var pMat = new THREE.ParticleBasicMaterial({size:1});
+var particles = new THREE.Geometry();
+
+for(var i=0; i<level1NavData.length; i++) {
+	for(var j=0; j<level1NavData[i].length; j++) {
+		if(level1NavData[i][j]==0) {
+			particles.vertices.push(new THREE.Vector3(j, 4, i));
+		}
+	}
+}
+
+var pSystem = new THREE.ParticleSystem(particles, pMat);
+
+scene.add(pSystem);*/
+
 camera.position=new THREE.Vector3(70,15,18);
 camera.rotation.x=-1;
 camera.rotation.y=0.2;
 camera.rotation.z=0.2;
 
-new THREE.Vector3(280,50,65)
+//new THREE.Vector3(280,50,65)
