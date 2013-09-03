@@ -18,7 +18,7 @@ Milestone tasks
 * [x] Unit selection (selected object is selectedObj variable)
 	* [x] Rewrite entire object naming system to allow selected units to be stored and used by the server
 * [x] Health
-* [ ] Reproduction of units
+* [x] Reproduction of units
 * [ ] Building placement
 * [ ] Destructable buildings
 * [ ] Resource collection

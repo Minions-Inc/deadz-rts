@@ -58,9 +58,13 @@ io.sockets.on('connection', function(socket) {
 	socket.on('ping2', function(data) {
 		socket.emit('pong2', data);
 	});
+	socket.on('rep', function() {
+		game.reproduce();
+	});
 });
 game.startSpawningZombies(io);
 setInterval(game.attackCheck, 500);
+setInterval(game.reproduce, 30000)
 updateSceneObjects();
 
 

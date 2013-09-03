@@ -43,12 +43,21 @@ Object.prototype.clone = function() {
         if (this.hasOwnProperty(attr)) clonedObj[attr] = this[attr];
     }
     return clonedObj;
-}
+};
 
 Object.prototype.randProp = function() {
 	if (this == null) return this;
 	return this[Object.keys(this)[Math.floor(Math.random() * Object.keys(this).length)]];
-}
+};
+
+Object.prototype.length = function() {
+	if (this == null) return this;
+	var thisLength = 0;
+	for(key in this) {
+		if(this.hasOwnProperty(key)) thisLength++;
+	}
+	return thisLength;
+};
 
 function newPlayer(socket, io) {
 	console.log(socket.id+" sent newPlayer!");
@@ -215,6 +224,28 @@ function attackCheck() {
 	}
 }
 
+function reproduce() {
+	var commCount = 0,
+		heroCount = 0;
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i)) {
+			commCount = objects[i].Characters.Commanders.length();
+			heroCount = objects[i].Characters.Hero.length();
+
+			for(var j=0;j<commCount;j++) {
+				var minion = new objTypes.Minion(i);
+				minion.name = minion.name + "-" + j;
+				objects[i].Characters.Minions[minion.name] = minion;	
+			}
+			for(var j=0;j<heroCount;j++) {
+				var commander = new objTypes.Commander(i);
+				commander.name = commander.name + "-" + j;
+				objects[i].Characters.Commanders[commander.name] = commander;	
+			}
+		}
+	}
+}
+
 module.exports = {
 	objects: objects,
 	startSpawningZombies: startSpawningZombies,
@@ -224,5 +255,6 @@ module.exports = {
 	clickPos: clickPos,
 	disconnected: disconnected,
 	attackCheck: attackCheck,
-	requiredModels: requiredModels
+	requiredModels: requiredModels,
+	reproduce: reproduce
 };
