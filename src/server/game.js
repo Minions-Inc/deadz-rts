@@ -225,9 +225,9 @@ function attackCheck() {
 }
 
 function reproduce() {
-	var commCount = 0,
-		heroCount = 0;
 	for(var i in objects) {
+		var commCount = 0,
+			heroCount = 0;
 		if(objects.hasOwnProperty(i)) {
 			commCount = objects[i].Characters.Commanders.length();
 			heroCount = objects[i].Characters.Hero.length();
