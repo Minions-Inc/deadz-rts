@@ -15,6 +15,7 @@ function Character() {
 	this.pos = {x:64,y:3,z:64};
 	this.model = "";
 	this.navName = this.name + "Nav";
+	this.inventory = {food: 0, building: 0};
 
 	return this;
 }

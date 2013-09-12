@@ -69,6 +69,7 @@ function newPlayer(socket, io) {
 			Commanders: {},
 			Hero: {},
 		},
+		inventory: {food: 100, building: 100},
 		selectedObj: {name: "", type: ""}
 	}
 	var hero = new objTypes.Hero(socket.id);
@@ -226,22 +227,46 @@ function attackCheck() {
 
 function reproduce() {
 	for(var i in objects) {
-		var commCount = 0,
-			heroCount = 0;
 		if(objects.hasOwnProperty(i)) {
-			commCount = objects[i].Characters.Commanders.length();
-			heroCount = objects[i].Characters.Hero.length();
-
+			var commCount = objects[i].Characters.Commanders.length(),
+				heroCount = objects[i].Characters.Hero.length();
 			for(var j=0;j<commCount;j++) {
 				var minion = new objTypes.Minion(i);
 				minion.name = minion.name + "-" + j;
-				objects[i].Characters.Minions[minion.name] = minion;	
+				objects[i].Characters.Minions[minion.name] = minion;
 			}
 			for(var j=0;j<heroCount;j++) {
 				var commander = new objTypes.Commander(i);
 				commander.name = commander.name + "-" + j;
 				objects[i].Characters.Commanders[commander.name] = commander;	
 			}
+		}
+	}
+}
+
+
+function minionGather() {
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i)) {
+			for(var j in objects[i].Characters.Minions) {
+				if(objects[i].Characters.Minions.hasOwnProperty(j)) {
+					if(Math.floor(Math.random()*4)==0)
+						objects[i].Characters.Minions[j].inventory.building += Math.ceil(25/objects[i].Characters.Minions.length());
+					else
+						objects[i].Characters.Minions[j].inventory.food += Math.ceil(50/objects[i].Characters.Minions.length());
+				}
+			}
+		}
+	}
+}
+
+
+
+function minionGatherTeam() {
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i)) {
+			objects[i].inventory.food += Math.floor(objects[i].Characters.Minions.length()/Math.pow(objects[i].inventory.food,1/4));
+			objects[i].inventory.building += Math.floor(objects[i].Characters.Minions.length()/Math.pow(objects[i].inventory.building,1/2));
 		}
 	}
 }
@@ -256,5 +281,7 @@ module.exports = {
 	disconnected: disconnected,
 	attackCheck: attackCheck,
 	requiredModels: requiredModels,
-	reproduce: reproduce
+	reproduce: reproduce,
+	minionGather: minionGather,
+	minionGatherTeam: minionGatherTeam
 };
