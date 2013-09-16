@@ -1,11 +1,5 @@
-function Character() {
+function Base() {
 	this.name = new Date().getTime();
-	this.health = 0;
-	this.speed = 0;
-	this.selected = false;
-	this.attackPower = 1;
-	this.attackRadius = 1;
-	this.collisionRadius = 1;
 	this.scale = {x:0.5,y:0.5,z:0.5};
 	/*this.pos = {
 		x: 0,
@@ -14,6 +8,18 @@ function Character() {
 	};*/
 	this.pos = {x:64,y:3,z:64};
 	this.model = "";
+
+	return this;
+}
+
+function Character() {
+	Base.call(this);
+	this.health = 0;
+	this.speed = 0;
+	this.selected = false;
+	this.attackPower = 1;
+	this.attackRadius = 1;
+	this.collisionRadius = 1;
 	this.navName = this.name + "Nav";
 	this.inventory = {food: 0, building: 0};
 
@@ -69,11 +75,21 @@ function Zombie(followedObject) {
 	return this;
 }
 
+function Building(name, type, owner) {
+	Base.call(this);
+	this.name = "Building" + name + this.name;
+	this.type = type;
+	this.model = "minionBase";
+	this.owner = owner;
+}
+
 
 module.exports = {
+	Base: Base,
 	Character: Character,
 	Minion: Minion,
 	Commander: Commander,
 	Hero: Hero,
-	Zombie: Zombie
+	Zombie: Zombie,
+	Building: Building
 };

@@ -4,11 +4,15 @@ var objects = {},
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
-	requiredModels = ["HumanBase","zombie"],
+	requiredModels = ["HumanBase","zombie","minionBase"],
 	zombieSpawn = [
 		{x:64,y:3,z:64},
 		{x:16,y:3,z:64},
 		{x:64,y:3,z:16}
+	],
+	playerSpawn = [
+		{x:66,y:3,z:8},
+		{x:66,y:3,z:118}
 	];
 
 function startSpawningZombies(io) {
@@ -61,26 +65,35 @@ Object.prototype.length = function() {
 
 function newPlayer(socket, io) {
 	console.log(socket.id+" sent newPlayer!");
+	if(objects.length() > 1) {
+		socket.emit('alert', "There are already 2 players, so you may only spectate!");
+		return;
+	}
 	//objects[socket.id] = {name: data.name, model:data.model, pos:{x:250,y:11.7,z:250}, selected: false};
 	//socket.emit("loadModels", requiredModels);
 	objects[socket.id] = {
+		PlayerID: objects.length(),
 		Characters: {
 			Minions: {},
 			Commanders: {},
 			Hero: {},
 		},
+		buildings: {},
 		inventory: {food: 100, building: 100},
 		selectedObj: {name: "", type: ""}
-	}
+	};
 	var hero = new objTypes.Hero(socket.id);
+	hero.pos = playerSpawn[objects[socket.id].PlayerID];
 	objects[socket.id].Characters.Hero[hero.name] = hero;
 	var commander = new objTypes.Commander(socket.id);
+	commander.pos = playerSpawn[objects[socket.id].PlayerID];
 	objects[socket.id].Characters.Commanders[commander.name] = commander;
 	//new Date().getTime()
 	//io.sockets.emit('newPlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos});
 }
 
 function clickPos(socket, io, data) {
+	console.log(data);
 	try {
 		if(objects[socket.id].selectedObj.name != "")
 			setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
@@ -185,7 +198,7 @@ function attackCheck() {
 	var objCol = [];
 	for(var i in zombies) {
 		if(zombies.hasOwnProperty(i)) {
-			zombieCol.push(zombies[i]);
+			zombieCol.push([zombies[i], i]);
 		}
 	}
 	for(var i in objects) {
@@ -209,12 +222,18 @@ function attackCheck() {
 	}
 	for(var i=0;i<zombieCol.length;i++) {
 		for(var j=0;j<objCol.length;j++) {
-			if(Math.abs(zombieCol[i].pos.x - objCol[j][0].pos.x) > (zombieCol[i].attackRadius + objCol[j][0].collisionRadius) || Math.abs(zombieCol[i].pos.y - objCol[j][0].pos.y) > (zombieCol[i].attackRadius + objCol[j][0].collisionRadius)) {
-				break;
+			//Player attacking
+			if(checkCollision(objCol[j][0], zombieCol[i][0], objCol[j][0].attackRadius, zombieCol[i][0].collisionRadius)) {
+				zombieCol[i][0].health -= objCol[j][0].attackPower;
+				console.log(zombieCol[i][0].name + " was hit! Health: " + zombieCol[i][0].health);
+				if(zombieCol[i][0].health < 1) {
+					console.log(zombieCol[i][0].name + " has died!");
+					delete zombies[zombieCol[i][1]];
+				}
 			}
-			var distance = ((zombieCol[i].pos.x - objCol[j][0].pos.x) * (zombieCol[i].pos.x - objCol[j][0].pos.x)) + ((zombieCol[i].pos.y - objCol[j][0].pos.y) * (zombieCol[i].pos.y - objCol[j][0].pos.y));
-			if(distance < (zombieCol[i].attackRadius + objCol[j][0].collisionRadius)) {
-				objCol[j][0].health -= zombieCol[i].attackPower;
+			//Zombie attacking
+			if(checkCollision(zombieCol[i][0], objCol[j][0], zombieCol[i][0].attackRadius, objCol[j][0].collisionRadius)) {
+				objCol[j][0].health -= zombieCol[i][0].attackPower;
 				console.log(objCol[j][0].name + " was hit! Health: " + objCol[j][0].health);
 				if(objCol[j][0].health < 1) {
 					console.log(objCol[j][0].name + " has died!");
@@ -225,6 +244,11 @@ function attackCheck() {
 	}
 }
 
+function checkCollision(objA, objB, objAColRad, objBColRad) {
+	var distance = Math.pow(objA.pos.x - objB.pos.x,2) + Math.pow(objA.pos.y - objB.pos.y,2);
+	return distance < objAColRad + objBColRad
+}
+
 function reproduce() {
 	for(var i in objects) {
 		if(objects.hasOwnProperty(i)) {
@@ -233,11 +257,13 @@ function reproduce() {
 			for(var j=0;j<commCount;j++) {
 				var minion = new objTypes.Minion(i);
 				minion.name = minion.name + "-" + j;
+				minion.pos = playerSpawn[objects[i].PlayerID];
 				objects[i].Characters.Minions[minion.name] = minion;
 			}
 			for(var j=0;j<heroCount;j++) {
 				var commander = new objTypes.Commander(i);
 				commander.name = commander.name + "-" + j;
+				commander.pos = playerSpawn[objects[i].PlayerID];
 				objects[i].Characters.Commanders[commander.name] = commander;	
 			}
 		}
@@ -271,6 +297,13 @@ function minionGatherTeam() {
 	}
 }
 
+function createBuilding(socket, data) {
+	var building = new objTypes.Building(data.name, data.type, socket.id)
+	building.pos = data.pos;
+	objects[socket.id].buildings[data.name] = building;
+
+}
+
 module.exports = {
 	objects: objects,
 	startSpawningZombies: startSpawningZombies,
@@ -283,5 +316,6 @@ module.exports = {
 	requiredModels: requiredModels,
 	reproduce: reproduce,
 	minionGather: minionGather,
-	minionGatherTeam: minionGatherTeam
+	minionGatherTeam: minionGatherTeam,
+	createBuilding: createBuilding
 };

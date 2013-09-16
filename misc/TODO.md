@@ -19,7 +19,11 @@ Milestone tasks
 	* [x] Rewrite entire object naming system to allow selected units to be stored and used by the server
 * [x] Health
 * [x] Reproduction of units
-* [ ] Building placement
+* [x] Player attacking zombies
+* [ ] Player attacking players
+* [ ] Scoreboard
+* [ ] Win Game
+* [-] Building placement
 * [ ] Destructable buildings
 * [ ] Resource collection
 * [ ] Resource sharing between units
@@ -36,9 +40,11 @@ Less important tasks
 * [ ] Create textures
 * [ ] Add character animations
 * [ ] Balance speed of units
+* [ ] Fix camera rotations for Player 2
 * [x] Make zombie spawn points (instead of tracked object position)
 	* [ ] Refine zombie spawn points
-* [ ] Make player spawn points
+* [x] Make player spawn points
+	* [ ] Make object-specific spawn points
 * [ ] Add background image
 	* [ ] Make background image scroll with camera
 

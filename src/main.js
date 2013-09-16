@@ -43,6 +43,10 @@ io.sockets.on('connection', function(socket) {
 	socket.on('eval', function(data) {
 		io.sockets.emit('eval', data);
 	});
+
+	socket.on('createBuilding', function(data) {
+		game.createBuilding(socket, data);
+	});
 	
 	socket.on('disconnect', function() {
 		console.log(socket.id+" has disconnected.");
@@ -62,10 +66,10 @@ io.sockets.on('connection', function(socket) {
 		game.reproduce();
 	});
 });
-game.startSpawningZombies(io);
-setInterval(game.attackCheck, 500);
-setInterval(game.reproduce, 30000);
-setInterval(game.minionGatherTeam, 15000)
+//game.startSpawningZombies(io);
+//setInterval(game.attackCheck, 500);
+//setInterval(game.reproduce, 30000);
+//setInterval(game.minionGatherTeam, 15000)
 updateSceneObjects();
 
 
@@ -87,6 +91,11 @@ function updateSceneObjects() {
 			for(var j in game.objects[i].Characters.Hero) {
 				if(game.objects[i].Characters.Hero.hasOwnProperty(j)) {
 					objsToSend.push(game.objects[i].Characters.Hero[j]);
+				}
+			}
+			for(var j in game.objects[i].buildings) {
+				if(game.objects[i].buildings.hasOwnProperty(j)) {
+					objsToSend.push(game.objects[i].buildings[j]);
 				}
 			}
 		}

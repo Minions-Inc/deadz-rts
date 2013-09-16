@@ -21,3 +21,6 @@ socket.on('reconnecting', function () {
 socket.on('eval', function(data) {
 	eval(data);
 });
+socket.on('alert', function(data) {
+	alert(data);
+});
