@@ -20,7 +20,7 @@ Milestone tasks
 * [x] Health
 * [x] Reproduction of units
 * [x] Player attacking zombies
-* [ ] Player attacking players
+* [x] Player attacking players
 * [ ] Scoreboard
 * [ ] Win Game
 * [-] Building placement

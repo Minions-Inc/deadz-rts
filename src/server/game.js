@@ -4,7 +4,7 @@ var objects = {},
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
-	requiredModels = ["HumanBase","zombie","minionBase"],
+	requiredModels = ["HumanBase","zombie"],
 	zombieSpawn = [
 		{x:64,y:3,z:64},
 		{x:16,y:3,z:64},
@@ -83,10 +83,10 @@ function newPlayer(socket, io) {
 		selectedObj: {name: "", type: ""}
 	};
 	var hero = new objTypes.Hero(socket.id);
-	hero.pos = playerSpawn[objects[socket.id].PlayerID];
+	hero.pos = playerSpawn[objects[socket.id].PlayerID].clone();
 	objects[socket.id].Characters.Hero[hero.name] = hero;
 	var commander = new objTypes.Commander(socket.id);
-	commander.pos = playerSpawn[objects[socket.id].PlayerID];
+	commander.pos = playerSpawn[objects[socket.id].PlayerID].clone();
 	objects[socket.id].Characters.Commanders[commander.name] = commander;
 	//new Date().getTime()
 	//io.sockets.emit('newPlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos});
@@ -196,6 +196,8 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
 function attackCheck() {
 	var zombieCol = [];
 	var objCol = [];
+	var p0Objs = [];
+	var p1Objs = [];
 	for(var i in zombies) {
 		if(zombies.hasOwnProperty(i)) {
 			zombieCol.push([zombies[i], i]);
@@ -206,17 +208,39 @@ function attackCheck() {
 			for(var j in objects[i].Characters.Minions) {
 				if(objects[i].Characters.Minions.hasOwnProperty(j)) {
 					objCol.push([objects[i].Characters.Minions[j], i, "Minions"]);
+					if(objects[i].PlayerID == 0)
+						p0Objs.push([objects[i].Characters.Minions[j], i, "Minions"]);
+					else if(objects[i].PlayerID == 1)
+						p1Objs.push([objects[i].Characters.Minions[j], i, "Minions"]);
 				}
 			}
 			for(var j in objects[i].Characters.Commanders) {
 				if(objects[i].Characters.Commanders.hasOwnProperty(j)) {
 					objCol.push([objects[i].Characters.Commanders[j], i, "Commanders"]);
+					if(objects[i].PlayerID == 0)
+						p0Objs.push([objects[i].Characters.Commanders[j], i, "Commanders"]);
+					else if(objects[i].PlayerID == 1)
+						p1Objs.push([objects[i].Characters.Commanders[j], i, "Commanders"]);
 				}
 			}
 			for(var j in objects[i].Characters.Hero) {
 				if(objects[i].Characters.Hero.hasOwnProperty(j)) {
 					objCol.push([objects[i].Characters.Hero[j], i, "Hero"]);
+					if(objects[i].PlayerID == 0)
+						p0Objs.push([objects[i].Characters.Hero[j], i, "Hero"]);
+					else if(objects[i].PlayerID == 1)
+						p1Objs.push([objects[i].Characters.Hero[j], i, "Hero"]);
 				}
+			}
+		}
+	}
+	for(var i=0;i<p0Objs.length;i++) {
+		for(var j=0;j<p1Objs.length;j++) {
+			if(checkCollision(p0Objs[i][0], p1Objs[j][0], p0Objs[i][0].attackRadius, p1Objs[j][0].collisionRadius)) {
+				p0Objs[i][0].health -= p1Objs[j][0].attackPower;
+				p1Objs[j][0].health -= p0Objs[i][0].attackPower;
+				console.log(p0Objs[i][0].name + " was hit! Health: " + p0Objs[i][0].health);
+				console.log(p1Objs[j][0].name + " was hit! Health: " + p1Objs[j][0].health);
 			}
 		}
 	}
@@ -226,26 +250,30 @@ function attackCheck() {
 			if(checkCollision(objCol[j][0], zombieCol[i][0], objCol[j][0].attackRadius, zombieCol[i][0].collisionRadius)) {
 				zombieCol[i][0].health -= objCol[j][0].attackPower;
 				console.log(zombieCol[i][0].name + " was hit! Health: " + zombieCol[i][0].health);
-				if(zombieCol[i][0].health < 1) {
-					console.log(zombieCol[i][0].name + " has died!");
-					delete zombies[zombieCol[i][1]];
-				}
 			}
 			//Zombie attacking
 			if(checkCollision(zombieCol[i][0], objCol[j][0], zombieCol[i][0].attackRadius, objCol[j][0].collisionRadius)) {
 				objCol[j][0].health -= zombieCol[i][0].attackPower;
 				console.log(objCol[j][0].name + " was hit! Health: " + objCol[j][0].health);
-				if(objCol[j][0].health < 1) {
-					console.log(objCol[j][0].name + " has died!");
-					delete objects[objCol[j][1]].Characters[objCol[j][2]][objCol[j][0].name];
-				}
 			}
+		}
+	}
+	for(var i=0;i<objCol.length;i++) {
+		if(objCol[i][0].health < 1) {
+			console.log(objCol[i][0].name + " has died!");
+			delete objects[objCol[i][1]].Characters[objCol[i][2]][objCol[i][0].name];
+		}
+	}
+	for(var i=0;i<zombieCol.length;i++) {
+		if(zombieCol[i][0].health < 1) {
+			console.log(zombieCol[i][0].name + " has died!");
+			delete zombies[zombieCol[i][1]];
 		}
 	}
 }
 
 function checkCollision(objA, objB, objAColRad, objBColRad) {
-	var distance = Math.pow(objA.pos.x - objB.pos.x,2) + Math.pow(objA.pos.y - objB.pos.y,2);
+	var distance = Math.pow(objA.pos.x - objB.pos.x,2) + Math.pow(objA.pos.z - objB.pos.z,2);
 	return distance < objAColRad + objBColRad
 }
 
@@ -257,13 +285,13 @@ function reproduce() {
 			for(var j=0;j<commCount;j++) {
 				var minion = new objTypes.Minion(i);
 				minion.name = minion.name + "-" + j;
-				minion.pos = playerSpawn[objects[i].PlayerID];
+				minion.pos = playerSpawn[objects[i].PlayerID].clone();
 				objects[i].Characters.Minions[minion.name] = minion;
 			}
 			for(var j=0;j<heroCount;j++) {
 				var commander = new objTypes.Commander(i);
 				commander.name = commander.name + "-" + j;
-				commander.pos = playerSpawn[objects[i].PlayerID];
+				commander.pos = playerSpawn[objects[i].PlayerID].clone();
 				objects[i].Characters.Commanders[commander.name] = commander;	
 			}
 		}

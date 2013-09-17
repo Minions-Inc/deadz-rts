@@ -66,10 +66,10 @@ io.sockets.on('connection', function(socket) {
 		game.reproduce();
 	});
 });
-//game.startSpawningZombies(io);
-//setInterval(game.attackCheck, 500);
-//setInterval(game.reproduce, 30000);
-//setInterval(game.minionGatherTeam, 15000)
+game.startSpawningZombies(io);
+setInterval(game.attackCheck, 500);
+setInterval(game.reproduce, 30000);
+setInterval(game.minionGatherTeam, 15000)
 updateSceneObjects();
 
 
