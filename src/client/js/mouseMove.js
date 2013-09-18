@@ -38,9 +38,9 @@ function onDocumentMouseDown( event ) {
 		var intersects = raycaster.intersectObjects(objsToFind, false);
 		if(intersects.length > 0) {
 			console.log(intersects);
-			if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0.4;
+			//if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0;
 			selectedObj = intersects[0].object;
-			selectedObj.material.materials[0].color.b = 0;
+			//selectedObj.material.materials[0].color.b = 0.4;
 			var type = selectedObj.name.match(/^(Hero|Commander|Minion)/)[0];
 			type = type == "Minion" ? "Minions" : type == "Commander" ? "Commanders" : type;
 			if(oldObj != null) {
@@ -51,7 +51,7 @@ function onDocumentMouseDown( event ) {
 				socket.emit('selectedObj',{name: selectedObj.name, type: type});
 			}
 		} else {
-			if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0.4;
+			//if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0;
 			selectedObj = undefined;
 			if(oldObj != null) {
 				var oldType = oldObj.name.match(/^(Hero|Commander|Minion)/)[0];

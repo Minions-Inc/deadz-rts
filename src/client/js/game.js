@@ -30,6 +30,15 @@ function setupNetwork() {
 				objects[data[i].name].scale = new THREE.Vector3(data[i].scale.x,data[i].scale.y,data[i].scale.z);
 				objects[data[i].name].owner = (data[i].hasOwnProperty("owner")) ? data[i].owner : null;
 				objects[data[i].name].health = (data[i].hasOwnProperty("health")) ? data[i].health : null;
+				objects[data[i].name].maxHealth = (data[i].hasOwnProperty("maxHealth")) ? data[i].maxHealth : null;
+				if(objects[data[i].name].owner == socket.socket.sessionid) {
+					objects[data[i].name].material.materials[0].color.r = (objects[data[i].name].maxHealth - objects[data[i].name].health < objects[data[i].name].maxHealth / 2) ? (objects[data[i].name].maxHealth - objects[data[i].name].health) / objects[data[i].name].maxHealth * 0.8 : 0.4;
+					objects[data[i].name].material.materials[0].color.g = (objects[data[i].name].health < objects[data[i].name].maxHealth / 2) ? objects[data[i].name].health / objects[data[i].name].maxHealth * 0.8 : 0.4;
+					if(selectedObj != objects[data[i].name])
+						objects[data[i].name].material.materials[0].color.b = 0;
+					else
+						objects[data[i].name].material.materials[0].color.b = 0.4;
+				}
 				//console.log("Moved "+data[i].name);
 			} else {
 				addPlayer(data[i].name, data[i].model, data[i].pos, data[i].scale);
@@ -64,7 +73,7 @@ function addPlayer(name, model, pos, scale) {
 		//object.scale.z=25;
 		//object.material = new THREE.MeshNormalMaterial();
 		object.position = new THREE.Vector3(pos.x,pos.y,pos.z);
-		object.scale = new THREE.Vector3(scale.x,scale.y,scale.z)
+		object.scale = new THREE.Vector3(scale.x,scale.y,scale.z);
 		//object.position.y = 1000-new THREE.Raycaster(new THREE.Vector3(object.position.x,1000,object.position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
 		//console.log(objects[data.name])
 	});
