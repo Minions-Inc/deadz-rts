@@ -21,8 +21,9 @@ Milestone tasks
 * [x] Reproduction of units
 * [x] Player attacking zombies
 * [x] Player attacking players
-* [ ] Scoreboard
-* [ ] Win Game
+* [x] Scoreboard
+	* [ ] Improve scoreboard
+* [x] Win game
 * [-] Building placement
 * [ ] Destructable buildings
 * [ ] Resource collection

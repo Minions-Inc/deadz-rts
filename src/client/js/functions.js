@@ -3,7 +3,8 @@ var objects = {};
 var modelCache = new MicroCache();
 var camera, scene, loader, pointLight, renderer;
 var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04, mouseDelta = 10;
-var windowHalfX, windowHalfY;
+var windowHalfX, windowHalfY
+var isPlaying;
 
 function addObj(name, loc, callback) {
 	if(objects[name] == null) {

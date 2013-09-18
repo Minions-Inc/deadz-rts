@@ -9,6 +9,11 @@ socket.on('loadModels', function(models) {
 	console.log(models);
 	loadModel(models, 0);
 });
+socket.on('isPlaying', function(playing) {
+	isPlaying = playing;
+	if(!isPlaying)
+		alert("There are already 2 players, so you may only spectate!");
+});
 function loadModel(models, i) {
 	console.log(models.length+","+i);
 	loader.load(models[i]+".js", function(geometry, mats) {
@@ -60,6 +65,12 @@ function setupNetwork() {
 		}
 		//setInterval(function(){objects[playerName].position.x+=10}, 1000)
 		//console.log(currObjs);
+	});
+	socket.on('endGame', function(data) {
+		var won = isPlaying ? data.winner == socket.socket.sessionid : true;
+		var who = isPlaying ? won ? "You " : "The other player " : "Player " + (data.winnerID+1) + " ";
+		var psst = isPlaying ? won ? "\n\nCongratulations!" : "\n\nBetter luck next time!" : "";
+		alert((isPlaying ? "You " : who)+(!isPlaying || won ? "won!" : "lost!")+"\n"+who+"had:\n"+data.heroLeft+" Hero(es) left,\n"+data.commandersLeft+" Commander(s) left,\n"+data.minionsLeft+" Minion(s) left!"+psst);
 	});
 	socket.emit('loadedModels');
 }

@@ -66,9 +66,11 @@ Object.prototype.length = function() {
 function newPlayer(socket, io) {
 	console.log(socket.id+" sent newPlayer!");
 	if(objects.length() > 1) {
-		socket.emit('alert', "There are already 2 players, so you may only spectate!");
+		//socket.emit('alert', "There are already 2 players, so you may only spectate!");
+		socket.emit('isPlaying', false);
 		return;
 	}
+	socket.emit('isPlaying', true);
 	//objects[socket.id] = {name: data.name, model:data.model, pos:{x:250,y:11.7,z:250}, selected: false};
 	//socket.emit("loadModels", requiredModels);
 	objects[socket.id] = {
@@ -193,7 +195,7 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
 	}
 }
 
-function attackCheck() {
+function attackCheck(io) {
 	var zombieCol = [];
 	var objCol = [];
 	var p0Objs = [];
@@ -262,6 +264,13 @@ function attackCheck() {
 		if(objCol[i][0].health < 1) {
 			console.log(objCol[i][0].name + " has died!");
 			delete objects[objCol[i][1]].Characters[objCol[i][2]][objCol[i][0].name];
+			if(objects[objCol[i][1]].Characters.Hero.length() == 0 && objects[objCol[i][1]].Characters.Commanders.length() == 0 && objects[objCol[i][1]].Characters.Minions.length() == 0) {
+				var winner;
+				for(var j in objects) {if(j != objCol[i][1]) {winner = j; break;}}
+				io.sockets.emit('endGame', {winner: winner, winnerID: objects[winner].PlayerID, minionsLeft: objects[winner].Characters.Minions.length(), commandersLeft: objects[winner].Characters.Commanders.length(), heroLeft: objects[winner].Characters.Hero.length()});
+				process.exit(0);
+				return;
+			}
 		}
 	}
 	for(var i=0;i<zombieCol.length;i++) {
