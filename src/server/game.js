@@ -268,6 +268,7 @@ function attackCheck(io) {
 				var winner;
 				for(var j in objects) {if(j != objCol[i][1]) {winner = j; break;}}
 				io.sockets.emit('endGame', {winner: winner, winnerID: objects[winner].PlayerID, minionsLeft: objects[winner].Characters.Minions.length(), commandersLeft: objects[winner].Characters.Commanders.length(), heroLeft: objects[winner].Characters.Hero.length()});
+				console.log("Game ended, killing server...");
 				process.exit(0);
 				return;
 			}
