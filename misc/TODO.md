@@ -22,7 +22,8 @@ Milestone tasks
 * [x] Player attacking zombies
 * [x] Player attacking players
 * [x] Scoreboard
-	* [ ] Improve scoreboard
+	* [x] Improve scoreboard
+	* [ ] Restyle scoreboard
 * [x] Win game
 * [-] Building placement
 * [ ] Destructable buildings

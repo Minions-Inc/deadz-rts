@@ -4,7 +4,7 @@ var modelCache = new MicroCache();
 var camera, scene, loader, pointLight, renderer;
 var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04, mouseDelta = 10;
 var windowHalfX, windowHalfY
-var isPlaying;
+var isPlaying, gameStarted = false;
 
 function addObj(name, loc, callback) {
 	if(objects[name] == null) {
@@ -169,6 +169,7 @@ windowHalfY = window.innerHeight / 2;
 //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 window.addEventListener( 'resize', onWindowResize, false );
 
+/*
 addObj("terrain","level1.js",function(a){
 	a.scale.x=2.125;
 	a.scale.y=2.125;
@@ -177,6 +178,7 @@ addObj("terrain","level1.js",function(a){
 	a.position.x=-4.5;
 	a.position.z=-4.5;
 });
+*/
 
 /*var pMat = new THREE.ParticleBasicMaterial({size:1});
 var particles = new THREE.Geometry();

@@ -4,6 +4,8 @@ var objects = {},
 	PF = require('../lib/pathfinding'),
 	objNav = {},
 	zombies = {},
+	EventEmitter = require('events').EventEmitter,
+	events = new EventEmitter(),
 	requiredModels = ["HumanBase","zombie"],
 	zombieSpawn = [
 		{x:64,y:3,z:64},
@@ -90,6 +92,8 @@ function newPlayer(socket, io) {
 	var commander = new objTypes.Commander(socket.id);
 	commander.pos = playerSpawn[objects[socket.id].PlayerID].clone();
 	objects[socket.id].Characters.Commanders[commander.name] = commander;
+	if(objects.length() == 2)
+		events.emit('startGame');
 	//new Date().getTime()
 	//io.sockets.emit('newPlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos});
 }
@@ -355,5 +359,6 @@ module.exports = {
 	reproduce: reproduce,
 	minionGather: minionGather,
 	minionGatherTeam: minionGatherTeam,
-	createBuilding: createBuilding
+	createBuilding: createBuilding,
+	events: events
 };

@@ -7,7 +7,16 @@ socket.on('connect', function() {
 });
 socket.on('loadModels', function(models) {
 	console.log(models);
-	loadModel(models, 0);
+	addObj("terrain","level1.js",function(a){
+		a.scale.x=2.125;
+		a.scale.y=2.125;
+		//a.scale.y=0.1;
+		a.scale.z=2.125;
+		a.position.x=-4.5;
+		a.position.z=-4.5;
+		loadModel(models, 0);
+	});
+	document.getElementById("percentLoaded").innerText=Math.round(1/(models.length+1)*100);
 });
 socket.on('isPlaying', function(playing) {
 	isPlaying = playing;
@@ -15,9 +24,10 @@ socket.on('isPlaying', function(playing) {
 		alert("There are already 2 players, so you may only spectate!");
 });
 function loadModel(models, i) {
-	console.log(models.length+","+i);
+	console.log((i+1)+" of "+models.length+" loaded");
 	loader.load(models[i]+".js", function(geometry, mats) {
 		modelCache.set(models[i]+".js", {geometry: geometry, mats:mats});
+		document.getElementById("percentLoaded").innerText=Math.round((i+2)/(models.length+1)*100);
 		if(i>models.length-2)
 			setupNetwork();
 		else
@@ -66,12 +76,27 @@ function setupNetwork() {
 		//setInterval(function(){objects[playerName].position.x+=10}, 1000)
 		//console.log(currObjs);
 	});
+	socket.on('updateScoreboard', function(data) {
+		document.getElementById("heroCount").innerText = data[socket.socket.sessionid].Hero;
+		document.getElementById("commanderCount").innerText = data[socket.socket.sessionid].Commanders;
+		document.getElementById("minionCount").innerText = data[socket.socket.sessionid].Minions;
+		document.getElementById("buildingCount").innerText = data[socket.socket.sessionid].Buildings;
+	});
 	socket.on('endGame', function(data) {
 		var won = isPlaying ? data.winner == socket.socket.sessionid : true;
 		var who = isPlaying ? won ? "You " : "The other player " : "Player " + (data.winnerID+1) + " ";
 		var psst = isPlaying ? won ? "\n\nCongratulations!" : "\n\nBetter luck next time!" : "";
 		alert((isPlaying ? "You " : who)+(!isPlaying || won ? "won!" : "lost!")+"\n"+who+"had:\n"+data.heroLeft+" Hero(es) left,\n"+data.commandersLeft+" Commander(s) left,\n"+data.minionsLeft+" Minion(s) left!"+psst);
 	});
+	socket.on('startGame', function() {
+		gameStarted = true;
+		var gStatus = document.getElementById('gameStatus');
+		gStatus.innerText="Game has started!";
+		gStatus.style.color="green";
+	});
+	document.getElementById("loading").remove();
+	document.body.style.cursor="crosshair";
+	//document.body.style.cursor="pointer";
 	socket.emit('loadedModels');
 }
 

@@ -3,14 +3,55 @@
 	<head>
 		<meta charset="utf-8">
 		<title>three.js + socket.io test</title>
+		<script type="text/javascript" src="/jquery-1.10.2.js"></script>
 		<style type="text/css">
 			body {
+				position: fixed;
 				margin: 0px;
 				overflow: hidden;
+				font-family: "Lato",sans-serif;
+				cursor: wait;
+			}
+			.overlay {
+				position: fixed;
+				margin: 0px;
+				overflow: hidden;
+				left: 50%;
+				background: rgba(255,255,255,0.8);
+				font-size: 16px;
+				padding: 4px;
+			}
+			#loading {
+				height: 40px;
+				width: 250px;
+				top: 35%;
+				text-align: center;
+				vertical-align: middle;
+				/*margin-top: -20px;*/
+				margin-left: -125px;
+				font-size: 32px;
+			}
+			#status {
+				/*height: 75px;*/
+				width: 200px;
+				margin-left: -100px;
 			}
 		</style>
 	</head>
 	<body>
+		<div id="status" class="overlay">
+			<div id="gameStatus" style="color: red; text-align: center;">Game has not yet started!</div>
+			<div>
+				<div style="text-align: center;">Current units:</div>
+				<div>Hero: <span id="heroCount">N/A</span></div>
+				<div>Commanders: <span id="commanderCount">N/A</span></div>
+				<div>Minions: <span id="minionCount">N/A</span></div>
+				<div>Buildings: <span id="buildingCount">N/A</span></div>
+			</div>
+		</div>
+
+		<div id="loading" class="overlay"><span id="percentLoaded">0</span>% Loaded...</div>
+
 		<script type="text/javascript" src="/microcache.js"></script>
 		<script type="text/javascript" src="/three.min.js"></script>
 		<script type="text/javascript" src="/mouseCameraMove.js"></script>
