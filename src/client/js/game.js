@@ -98,6 +98,8 @@ function setupNetwork() {
 	document.body.style.cursor="crosshair";
 	//document.body.style.cursor="pointer";
 	socket.emit('loadedModels');
+	gameUpdate();
+	render();
 }
 
 function addPlayer(name, model, pos, scale) {

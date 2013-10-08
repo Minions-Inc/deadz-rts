@@ -3,7 +3,8 @@ var objects = {};
 var modelCache = new MicroCache();
 var camera, scene, loader, pointLight, renderer;
 var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04, mouseDelta = 10;
-var windowHalfX, windowHalfY
+var windowHalfX, windowHalfY;
+var tps = 30, fpsLimit = 30;
 var isPlaying, gameStarted = false;
 
 function addObj(name, loc, callback) {
@@ -116,7 +117,17 @@ function addSphere(name) {
 }
 
 function render() {
-	requestAnimationFrame(render);
+	setTimeout(function() {
+		requestAnimationFrame(render);
+	}, 1000/fpsLimit);
+	if(!document.webkitHidden) renderer.render(scene, camera);
+}
+
+function gameUpdate() {
+	setTimeout(function() {
+		gameUpdate();
+	}, 1000/tps); // Ticks Per Second
+
 	if(scrollingHoriz == 1) {
 		camera.position.x -= mouseEdgeSpeed
 		camera.position.z += camera.rotation.z*mouseEdgeSpeed;
@@ -137,7 +148,6 @@ function render() {
 	if(camera.position.x > 135) camera.position.x=135;
 	if(camera.position.z < 10) camera.position.z=10;
 	if(camera.position.z > 135) camera.position.z=135;
-	renderer.render(scene, camera);
 }
 
 function onWindowResize() {
