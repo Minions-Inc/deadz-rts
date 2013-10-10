@@ -2,11 +2,11 @@ var cluster = require('cluster');
 var currTasks = 0, currWorkers = 0;
 
 if(cluster.isMaster) {
-	for(var i=1; i<require('os').cpus().length; i++) {
+	for(var i=1; i<require('os').cpus().length; i++) { // Leave 1 thread free for the master and whatever else is going on in the computer
 		setupWorker();
 	}
 
-	cluster.on('exit', function(worker, code, signal) {
+	cluster.on('exit', function(worker, code, signal) { // When a worker crashes or exits
 		console.log('Worker ' + worker.workerID + ' has died. Restarting...');
 		currJobs -= worker.currTasks;
 		currWorkers--;
@@ -23,7 +23,8 @@ if(cluster.isMaster) {
 			for(var i in data.vars)
 				global[i] = data.vars[i];
 		}
-		process.send({cmd: 'finishedTask', workerID: cluster.worker.id, task: data.cmd});
+
+		process.send({cmd: 'finishedTask', workerID: cluster.worker.id, task: data.cmd}); // Tell the master we have finished the task that was sent
 	});
 }
 
