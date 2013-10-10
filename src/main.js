@@ -5,7 +5,8 @@ var cmdArgs = process.argv.splice(2),
 	server = http.createServer(app).listen(/^\d+$/.test(cmdArgs[0]) ? cmdArgs[0] : 80),
 	io = require('socket.io').listen(server),
 	game = require('./server/game.js'),
-	hasStarted = false;
+	hasStarted = false,
+	cluster = require('./server/cluster/handler.js');
 
 io.set('log level', 2);
 io.set('close timeout', 30);
@@ -145,3 +146,22 @@ function updateScoreboard() {
 	io.sockets.emit('updateScoreboard', scores);
 	setTimeout(updateScoreboard, 500);
 }
+
+game.events.on('cluster', function(data) {
+	cluster.taskWorker(data.cmd, data.params)
+});
+
+cluster.events.on('updateZombie', function(data) {
+	game.zombies[data.name] = data.zombieData;
+	game.objNav[data.navName] = data.navData;
+});
+cluster.events.on('deleteZombie', function(data) {
+	game.deleteZombie(data.name);
+});
+cluster.events.on('updatePlayer', function(data) {
+	game.objects[data.name] = data.objectData;
+	game.objNav[data.navName] = data.navData;
+});
+cluster.on('deleteNav', function(data) {
+	game.deleteObjectNav(data.name);
+})

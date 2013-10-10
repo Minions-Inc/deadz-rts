@@ -43,12 +43,12 @@ function startSpawningZombies(io) {
 }
 
 Object.prototype.clone = function() {
-    if (this == null) return this;
-    var clonedObj = new Object();
-    for (var attr in this) {
-        if (this.hasOwnProperty(attr)) clonedObj[attr] = this[attr];
-    }
-    return clonedObj;
+	if (this == null) return this;
+	var clonedObj = new Object();
+	for (var attr in this) {
+		if (this.hasOwnProperty(attr)) clonedObj[attr] = this[attr];
+	}
+	return clonedObj;
 };
 
 Object.prototype.randProp = function() {
@@ -132,46 +132,51 @@ function disconnected(socket, io) {
 }
 
 function setupNavData(navData, height, width, callback) {
-    grid = new PF.Grid(width,height,c=navData);
-    finder = new PF.AStarFinder({
-        allowDiagonal:true,
-        dontCrossCorners:true
-    });
-    callback && callback(grid, finder);
+	grid = new PF.Grid(width,height,c=navData);
+	finder = new PF.AStarFinder({
+		allowDiagonal:true,
+		dontCrossCorners:true
+	});
+	callback && callback(grid, finder);
 }
 
 function runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, continued) {
 	try {
-	    if(!continued) {
-	        if (typeof(objNav[object.navName]) !== "undefined") {
-	            objNav[object.navName] = {
-	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
-	            };
-	            return;
-	        } else {
-	            objNav[object.navName] = {
-	                path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
-	            };
-	        }
-	    }
-	    if(object == undefined || typeof(object) !== "object") {
+		if(!continued) {
+			if (typeof(objNav[object.navName]) !== "undefined") {
+				objNav[object.navName] = {
+					path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
+				};
+				return;
+			} else {
+				objNav[object.navName] = {
+					path: finder.findPath(object.pos.x,object.pos.z,targetPos.x,targetPos.z,grid.clone())
+				};
+			}
+		}
+		if(object == undefined || typeof(object) !== "object") {
 			delete objNav[object.navName];
 			return;
 		}
-	    var steps = (objNav[object.navName].path.length>steps) ? steps : objNav[object.navName].path.length-1;
-	    object.pos.x=objNav[object.navName].path[steps][0]*moveMult;
-	    object.pos.z=objNav[object.navName].path[steps][1]*moveMult;
-	    //io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
-	    objNav[object.navName].path.shift();
-	    if(objNav[object.navName].path.length<1) {
-	        delete objNav[object.navName];
-	    } else if(typeof(objNav[object.navName]) !== "undefined") {
-	        setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},100/object.speed);
-	    }
-    } catch (e) {
-    		console.warn("FATAL ERROR: "+e.toString());
-    		if(object.navName != undefined) delete objNav[object.navName];
+		var steps = (objNav[object.navName].path.length>steps) ? steps : objNav[object.navName].path.length-1;
+		object.pos.x=objNav[object.navName].path[steps][0]*moveMult;
+		object.pos.z=objNav[object.navName].path[steps][1]*moveMult;
+		//io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
+		objNav[object.navName].path.shift();
+		if(objNav[object.navName].path.length<1) {
+			delete objNav[object.navName];
+		} else if(typeof(objNav[object.navName]) !== "undefined") {
+			setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},100/object.speed);
+		}
+	} catch (e) {
+			console.warn("FATAL ERROR: "+e.toString());
+			if(object.navName != undefined) delete objNav[object.navName];
 	}
+}
+
+function deleteObjectNav(objectName) {
+	var object = objects[objectName];
+	if(object.navName != undefined) delete objNav[object.navName];
 }
 
 function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
@@ -181,22 +186,28 @@ function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
 			delete zombies[object.name];
 			return;
 		}
-	    objNav[object.navName] = {path: finder.findPath(object.pos.x,object.pos.z,targetObj.pos.x,targetObj.pos.z,grid.clone())};
-	    //var steps = (objNav[object.navName].path.length>steps) ? steps : objNav[object.navName].path.length-1;
-	    //steps = (steps < 0) ? steps : 0;
-	    step = (objNav[object.navName].path.length > 1) ? steps : 0;
-    	object.pos.x=objNav[object.navName].path[step][0]*moveMult;
-    	object.pos.z=objNav[object.navName].path[step][1]*moveMult;
-	    //io.sockets.emit('movePlayer', {name: object.name, model: object.model, pos: object.pos})
-	    objNav[object.navName].path.shift();
-	    //if(typeof(objNav[object.navName]) !== "undefined") {
-    	setTimeout(function() {zombiePath(grid, finder, object, targetObj, moveMult, steps, io);},100/object.speed);
-	    //}
-    } catch (e) {
+		objNav[object.navName] = {path: finder.findPath(object.pos.x,object.pos.z,targetObj.pos.x,targetObj.pos.z,grid.clone())};
+		//var steps = (objNav[object.navName].path.length>steps) ? steps : objNav[object.navName].path.length-1;
+		//steps = (steps < 0) ? steps : 0;
+		var step = (objNav[object.navName].path.length > 1) ? steps : 0;
+		object.pos.x=objNav[object.navName].path[step][0]*moveMult;
+		object.pos.z=objNav[object.navName].path[step][1]*moveMult;
+		//io.sockets.emit('movePlayer', {name: object.name, model: object.model, pos: object.pos})
+		objNav[object.navName].path.shift();
+		//if(typeof(objNav[object.navName]) !== "undefined") {
+		setTimeout(function() {zombiePath(grid, finder, object, targetObj, moveMult, steps, io);},100/object.speed);
+		//}
+	} catch (e) {
 		console.warn("FATAL ERROR: "+e.toString());
 		if(object.navName != undefined) delete objNav[object.navName];
 		if(object.name != undefined) delete zombies[object.name];
 	}
+}
+
+function deleteZombie(zombieName) {
+	var object = zombies[zombieName];
+	if(object.navName != undefined) delete objNav[object.navName];
+	if(object.name != undefined) delete zombies[object.name];
 }
 
 function attackCheck(io) {
@@ -360,5 +371,8 @@ module.exports = {
 	minionGather: minionGather,
 	minionGatherTeam: minionGatherTeam,
 	createBuilding: createBuilding,
-	events: events
+	events: events,
+	objNav: objNav,
+	deleteZombie: deleteZombie,
+	deleteObjectNav: deleteObjectNav
 };

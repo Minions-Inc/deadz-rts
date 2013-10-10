@@ -1,7 +1,14 @@
-var cluster = require('cluster');
+var cluster = require('cluster'),
+	EventEmitter = require('events').EventEmitter,
+	events = new EventEmitter();
 var currTasks = 0, currWorkers = 0;
 
-if(cluster.isMaster) {
+if(cluster.isMaster) { // Left in for saftey
+	cluster.setupMaster({
+		exec: __dirname+'/worker.js',
+		silent: false
+	});
+
 	for(var i=1; i<require('os').cpus().length; i++) { // Leave 1 thread free for the master and whatever else is going on in the computer
 		setupWorker();
 	}
@@ -11,20 +18,6 @@ if(cluster.isMaster) {
 		currJobs -= worker.currTasks;
 		currWorkers--;
 		setupWorker();
-	});
-} else if(cluster.isWorker) {
-	console.log("Cluster worker ID #" + cluster.worker.id + " has started");
-	process.on('message', function(data) {
-		if(!data.cmd)
-			return;
-		if(data.cmd == 'eval')
-			eval(data.params);
-		else if(data.cmd == 'globalVars') {
-			for(var i in data.vars)
-				global[i] = data.vars[i];
-		}
-
-		process.send({cmd: 'finishedTask', workerID: cluster.worker.id, task: data.cmd}); // Tell the master we have finished the task that was sent
 	});
 }
 
@@ -41,7 +34,7 @@ function setupWorker() {
 			currTasks--;
 			console.log('Worker #' + worker.workerID + ' has finished running ' + data.task);
 		} else if(data.cmd == 'notifyMaster') { // To log a message on the master
-			console.log('Worker #' + data.workerID + ' sent a message: ' + data.msg);
+			console.log('Worker #' + worker.workerID + ' sent a message: ' + data.msg);
 		} else if(data.cmd == 'setVars') { // To send variables to the master
 			for(var i in data.vars) {
 				global[i] = data.vars[i];
@@ -52,6 +45,8 @@ function setupWorker() {
 				varsToSend[data.vars[i]] = global[data.vars[i]];
 			}
 			worker.send({cmd: 'globalVars', vars: varsToSend});
+		} else if(data.cmd == 'emitEvent') {
+			events.emit(data.eventName, data.eventData);
 		}
 	});
 	currWorkers++;
@@ -78,3 +73,9 @@ function taskWorker(cmd, params) {
 	}
 	return false;
 }
+
+module.exports = {
+	events: events,
+	taskWorker: taskWorker,
+	eachWorker: eachWorker
+};
