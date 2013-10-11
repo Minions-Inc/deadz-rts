@@ -14,7 +14,7 @@ if(cluster.isWorker) { // Left in for saftey
 				global[i] = data.params.vars[i];
 		} else if(data.cmd == 'setupNavData') {
 			console.log("Worker #" + cluster.worker.workerID + " got setupNavData!");
-			setupNavData(data.params.object, 128, 128, data.params.id);
+			setupNavData(data.params.object, 128, 128, data.params.id, data.params.objectType);
 		} else if(data.cmd == 'runPathData') {
 			runPathData(data.params.object);
 		}
@@ -25,13 +25,13 @@ if(cluster.isWorker) { // Left in for saftey
 
 // Start pathfinding functions //
 
-function setupNavData(object, height, width, socketid) {
+function setupNavData(object, height, width, socketid, objectType) {
 	grid = new PF.Grid(width,height,c=navData.level1NavData);
 	finder = new PF.AStarFinder({
 		allowDiagonal:true,
 		dontCrossCorners:true
 	});
-	process.send({cmd: 'setupNavData', objectName: object.name, grid: grid, finder: finder, socketid: socketid});
+	process.send({cmd: 'setupNavData', objectName: object.name, objectType: object.type, grid: grid, finder: finder, socketid: socketid, objectType: objectType});
 }
 
 function runPathData(object, targetPos, moveMult) {

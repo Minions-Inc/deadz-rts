@@ -166,7 +166,7 @@ cluster.events.on('deleteNav', function(data) {
 	game.objects[data.objectName].navData = [];
 });
 cluster.events.on('setupNavData', function(data) {
-	var object = game.objects[data.socketid].Characters[game.objects[data.socketid].selectedObj.type][game.objects[data.socketid].selectedObj.name]
+	var object = game.objects[data.socketid].Characters[data.objectType][data.objectName];
 	object.grid = data.grid;
 	object.finder = data.finder;
 });

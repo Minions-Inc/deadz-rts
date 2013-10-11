@@ -103,7 +103,7 @@ function clickPos(socket, io, data) {
 	try {
 		if(objects[socket.id].selectedObj.name != "")
 			//setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
-			events.emit('cluster', {cmd: 'setupNavData', params:{object: objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name], id: socket.id}});
+			events.emit('cluster', {cmd: 'setupNavData', params:{object: objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name], objectType: objects[socket.id].selectedObj.type, id: socket.id}});
 	} catch(e) {
 		console.warn("FATAL CLICKPOS ERROR: "+e.toString());
 	}
