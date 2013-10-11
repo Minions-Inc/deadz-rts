@@ -162,6 +162,6 @@ cluster.events.on('updatePlayer', function(data) {
 	game.objects[data.name] = data.objectData;
 	game.objNav[data.navName] = data.navData;
 });
-cluster.on('deleteNav', function(data) {
+cluster.events.on('deleteNav', function(data) {
 	game.deleteObjectNav(data.name);
 })
