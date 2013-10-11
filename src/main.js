@@ -79,7 +79,7 @@ io.sockets.on('connection', function(socket) {
 });
 updateSceneObjects();
 
-game.events.once('startGame', function() {
+/*game.events.once('startGame', function() {
 	game.startSpawningZombies(io);
 	setInterval(function(){game.attackCheck(io);}, 500);
 	setInterval(game.reproduce, 30000);
@@ -88,7 +88,15 @@ game.events.once('startGame', function() {
 	hasStarted = true;
 	io.sockets.emit('startGame');
 	console.log('Started game!');
-});
+});*/
+	game.startSpawningZombies(io);
+	setInterval(function(){game.attackCheck(io);}, 500);
+	setInterval(game.reproduce, 30000);
+	setInterval(game.minionGatherTeam, 15000);
+	updateScoreboard();
+	hasStarted = true;
+	io.sockets.emit('startGame');
+	console.log('Started game!');
 
 function updateSceneObjects() {
 	var objsToSend = [];
@@ -148,20 +156,21 @@ function updateScoreboard() {
 }
 
 game.events.on('cluster', function(data) {
-	cluster.taskWorker(data.cmd, data.params)
+	cluster.taskWorker(data.cmd, data.params);
 });
 
-cluster.events.on('updateZombie', function(data) {
-	game.zombies[data.name] = data.zombieData;
-	game.objNav[data.navName] = data.navData;
-});
-cluster.events.on('deleteZombie', function(data) {
-	game.deleteZombie(data.name);
-});
-cluster.events.on('updatePlayer', function(data) {
-	game.objects[data.name] = data.objectData;
+cluster.events.on('updateNavdata', function(data) {
 	game.objNav[data.navName] = data.navData;
 });
 cluster.events.on('deleteNav', function(data) {
-	game.deleteObjectNav(data.name);
-})
+	game.objects[data.objectName].navData = [];
+});
+cluster.events.on('setupNavData', function(data) {
+	var object = game.objects[data.socketid].Characters[game.objects[data.socketid].selectedObj.type][game.objects[data.socketid].selectedObj.name]
+	object.grid = data.grid;
+	object.finder = data.finder;
+});
+cluster.events.on('updateObject', function(data) {
+	game.objects[data.objectName].pos = data.objectPos;
+	game.objects[data.objectName].navData = data.navData;
+});

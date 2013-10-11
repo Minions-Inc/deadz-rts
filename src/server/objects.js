@@ -21,7 +21,9 @@ function Character() {
 	this.attackPower = 1;
 	this.attackRadius = 1;
 	this.collisionRadius = 1;
-	this.navName = this.name + "Nav";
+	this.navData = [];
+	this.grid = null;
+	this.finder = null;
 	this.inventory = {food: 0, building: 0};
 
 	return this;

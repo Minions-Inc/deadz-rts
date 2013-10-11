@@ -47,6 +47,12 @@ function setupWorker() {
 			worker.send({cmd: 'globalVars', vars: varsToSend});
 		} else if(data.cmd == 'emitEvent') {
 			events.emit(data.eventName, data.eventData);
+		} else if(data.cmd == 'deleteNav') {
+			events.emit('deleteNav', {objectName: data.objectName})
+		} else if(data.cmd == 'setupNavData') {
+			events.emit('setupNavData', {objectName: data.objectName, grid: data.grid, finder: data.finder, socketid: data.socketid});
+		} else if(data.cmd == 'updateObject') {
+			events.emit('updateObject', {objectName: data.objectName, objectPos: data.objectPos, navData: data.navData});
 		}
 	});
 	currWorkers++;

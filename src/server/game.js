@@ -102,7 +102,8 @@ function clickPos(socket, io, data) {
 	console.log(data);
 	try {
 		if(objects[socket.id].selectedObj.name != "")
-			setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
+			//setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
+			events.emit('cluster', {cmd: 'setupNavData', params:{object: objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name], id: socket.id}});
 	} catch(e) {
 		console.warn("FATAL CLICKPOS ERROR: "+e.toString());
 	}
@@ -172,11 +173,6 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, socket, i
 			console.warn("FATAL ERROR: "+e.toString());
 			if(object.navName != undefined) delete objNav[object.navName];
 	}
-}
-
-function deleteObjectNav(objectName) {
-	var object = objects[objectName];
-	if(object.navName != undefined) delete objNav[object.navName];
 }
 
 function zombiePath(grid, finder, object, targetObj, moveMult, steps, io) {
@@ -373,6 +369,5 @@ module.exports = {
 	createBuilding: createBuilding,
 	events: events,
 	objNav: objNav,
-	deleteZombie: deleteZombie,
-	deleteObjectNav: deleteObjectNav
+	deleteZombie: deleteZombie
 };
