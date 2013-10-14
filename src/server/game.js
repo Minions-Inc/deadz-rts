@@ -15,7 +15,9 @@ var objects = {},
 	playerSpawn = [
 		{x:66,y:3,z:8},
 		{x:66,y:3,z:118}
-	];
+	],
+	moveTimers = {},
+	timerCount = 0;
 
 function startSpawningZombies(io) {
 	setInterval(function() {
@@ -30,9 +32,11 @@ function startSpawningZombies(io) {
 				var zombie = new objTypes.Zombie(objToFollow);
 				//zombie.pos = zombie.followedObject.pos.clone();
 				zombie.pos = zombieSpawn[Math.floor(Math.random()*zombieSpawn.length)];
+				zombie.targetPos = zombie.followedObject.pos;
 				//zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
-				setupNavData(navData.level1NavData, 128, 128, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
+				//setupNavData(navData.level1NavData, 128, 128, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
 				zombies[zombie.name] = zombie;
+				startZombieMoveTimer(zombie.name);
 			} else {
 				console.log("Tried to spawn a zombie when no players had connected!");
 			}
@@ -88,10 +92,14 @@ function newPlayer(socket, io) {
 	};
 	var hero = new objTypes.Hero(socket.id);
 	hero.pos = playerSpawn[objects[socket.id].PlayerID].clone();
+	hero.targetPos = playerSpawn[objects[socket.id].PlayerID].clone();
 	objects[socket.id].Characters.Hero[hero.name] = hero;
+	startMoveTimer(socket.id, "Hero", hero.name);
 	var commander = new objTypes.Commander(socket.id);
 	commander.pos = playerSpawn[objects[socket.id].PlayerID].clone();
+	commander.targetPos = playerSpawn[objects[socket.id].PlayerID].clone();
 	objects[socket.id].Characters.Commanders[commander.name] = commander;
+	startMoveTimer(socket.id, "Commanders", commander.name);
 	if(objects.length() == 2)
 		events.emit('startGame');
 	//new Date().getTime()
@@ -101,9 +109,13 @@ function newPlayer(socket, io) {
 function clickPos(socket, io, data) {
 	console.log(data);
 	try {
-		if(objects[socket.id].selectedObj.name != "")
+		if(objects[socket.id].selectedObj.name != "") {
+			var selectedObj = objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name];
+			selectedObj.targetPos = {x: Math.floor(data.x), z: Math.floor(data.z)};
+			console.log(objects[socket.id].selectedObj.targetPos);
 			//setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
-			events.emit('cluster', {cmd: 'setupNavData', params:{object: objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name], objectType: objects[socket.id].selectedObj.type, id: socket.id}});
+			events.emit('cluster', {cmd: 'setupNavData', params: {object: selectedObj, objectType: objects[socket.id].selectedObj.type}});
+		}
 	} catch(e) {
 		console.warn("FATAL CLICKPOS ERROR: "+e.toString());
 	}
@@ -130,6 +142,55 @@ function disconnected(socket, io) {
 		}
 	}*/
 	delete objects[socket.id];
+}
+
+function startMoveTimer(socketid, objType, objName) {
+	var object = objects[socketid].Characters[objType][objName];
+	var timerID = timerCount++;
+	object.moveTimer = timerID;
+	moveTimers[timerID] = setInterval(function() {
+		moveTimer(object, timerID, objType);
+	}, 100/object.speed);
+}
+
+function startZombieMoveTimer(objName) {
+	var object = zombies[objName];
+	var timerID = timerCount++;
+	object.moveTimer = timerID;
+	moveTimers[timerID] = setInterval(function() {
+		zombieMoveTimer(object, timerID);
+	}, 100/object.speed);
+}
+
+function stopMoveTimer(timerID) {
+	clearInterval(moveTimers[timerID]);
+	delete moveTimers[timerID];
+}
+
+function moveTimer(object, timerID, objType) {
+	if(typeof(object) == "undefined") {
+		stopMoveTimer(moveTimers[timerID]);
+		return;
+	}
+	events.emit('cluster', {
+		cmd: 'runPathData', params: {
+			object: object,
+			objType: objType
+		}
+	});
+}
+
+function zombieMoveTimer(object, timerID) {
+	if(typeof(object) == "undefined") {
+		stopMoveTimer(moveTimers[timerID]);
+		return;
+	}
+	object.targetPos = object.followedObject.pos;
+	events.emit('cluster', {
+		cmd: 'runZombiePathData', params: {
+			object: object
+		}
+	});
 }
 
 function setupNavData(navData, height, width, callback) {
@@ -167,7 +228,7 @@ function runPathData(grid, finder, object, targetPos, moveMult, steps, socket, i
 		if(objNav[object.navName].path.length<1) {
 			delete objNav[object.navName];
 		} else if(typeof(objNav[object.navName]) !== "undefined") {
-			setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},100/object.speed);
+			setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},25/object.speed);
 		}
 	} catch (e) {
 			console.warn("FATAL ERROR: "+e.toString());
@@ -307,13 +368,17 @@ function reproduce() {
 				var minion = new objTypes.Minion(i);
 				minion.name = minion.name + "-" + j;
 				minion.pos = playerSpawn[objects[i].PlayerID].clone();
+				minion.targetPos = playerSpawn[objects[i].PlayerID].clone();
 				objects[i].Characters.Minions[minion.name] = minion;
+				startMoveTimer(i, "Minions", minion.name);
 			}
 			for(var j=0;j<heroCount;j++) {
 				var commander = new objTypes.Commander(i);
 				commander.name = commander.name + "-" + j;
 				commander.pos = playerSpawn[objects[i].PlayerID].clone();
-				objects[i].Characters.Commanders[commander.name] = commander;	
+				commander.targetPos = playerSpawn[objects[i].PlayerID].clone();
+				objects[i].Characters.Commanders[commander.name] = commander;
+				startMoveTimer(i, "Commanders", commander.name);
 			}
 		}
 	}
@@ -369,5 +434,8 @@ module.exports = {
 	createBuilding: createBuilding,
 	events: events,
 	objNav: objNav,
-	deleteZombie: deleteZombie
+	deleteZombie: deleteZombie,
+	startMoveTimer: startMoveTimer,
+	startZombieMoveTimer: startZombieMoveTimer,
+	stopMoveTimer: stopMoveTimer
 };

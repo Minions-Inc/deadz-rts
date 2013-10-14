@@ -79,7 +79,7 @@ io.sockets.on('connection', function(socket) {
 });
 updateSceneObjects();
 
-/*game.events.once('startGame', function() {
+game.events.once('startGame', function() {
 	game.startSpawningZombies(io);
 	setInterval(function(){game.attackCheck(io);}, 500);
 	setInterval(game.reproduce, 30000);
@@ -88,15 +88,7 @@ updateSceneObjects();
 	hasStarted = true;
 	io.sockets.emit('startGame');
 	console.log('Started game!');
-});*/
-	game.startSpawningZombies(io);
-	setInterval(function(){game.attackCheck(io);}, 500);
-	setInterval(game.reproduce, 30000);
-	setInterval(game.minionGatherTeam, 15000);
-	updateScoreboard();
-	hasStarted = true;
-	io.sockets.emit('startGame');
-	console.log('Started game!');
+});
 
 function updateSceneObjects() {
 	var objsToSend = [];
@@ -159,18 +151,41 @@ game.events.on('cluster', function(data) {
 	cluster.taskWorker(data.cmd, data.params);
 });
 
-cluster.events.on('updateNavdata', function(data) {
-	game.objNav[data.navName] = data.navData;
-});
 cluster.events.on('deleteNav', function(data) {
-	game.objects[data.objectName].navData = [];
+	game.objects[data.socketid].Characters[data.objectType][data.objectName].navData = [];
 });
 cluster.events.on('setupNavData', function(data) {
 	var object = game.objects[data.socketid].Characters[data.objectType][data.objectName];
-	object.grid = data.grid;
-	object.finder = data.finder;
+	if(typeof(object) == "undefined") {
+		game.stopMoveTimer(data.timerID);
+		return;
+	}
+	//object.grid = data.grid;
+	//object.finder = data.finder;
+	object.navData = data.navData;
+	//game.startMoveTimer(data.socketid, data.objectType, data.objectName);
 });
 cluster.events.on('updateObject', function(data) {
-	game.objects[data.objectName].pos = data.objectPos;
-	game.objects[data.objectName].navData = data.navData;
+	var object = game.objects[data.socketid].Characters[data.objectType][data.objectName];
+	if(typeof(object) == "undefined") {
+		game.stopMoveTimer(data.timerID);
+		return;
+	}
+	object.pos = data.objectPos;
+	object.navData = data.navData;
+});
+cluster.events.on('stopMoveTimer', function(data) {
+	game.stopMoveTimer(data.timerID);
+});
+cluster.events.on('deleteZombieNav', function(data) {
+	game.zombies[data.objectName].navData = [];
+});
+cluster.events.on('updateZombieObject', function(data) {
+	var object = game.zombies[data.objectName];
+	if(typeof(object) == "undefined") {
+		game.stopMoveTimer(data.timerID);
+		return;
+	}
+	object.pos = data.objectPos;
+	object.navData = data.navData;
 });

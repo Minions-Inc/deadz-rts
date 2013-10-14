@@ -25,6 +25,8 @@ function Character() {
 	this.grid = null;
 	this.finder = null;
 	this.inventory = {food: 0, building: 0};
+	this.targetPos = {x:0, y:3, z:0};
+	this.moveTimer = 0;
 
 	return this;
 }

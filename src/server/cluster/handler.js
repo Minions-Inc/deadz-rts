@@ -32,7 +32,7 @@ function setupWorker() {
 		if(data.cmd == 'finishedTask') { // When the load-balanced task has finished
 			worker.currJobs--;
 			currTasks--;
-			console.log('Worker #' + worker.workerID + ' has finished running ' + data.task);
+			//console.log('Worker #' + worker.workerID + ' has finished running ' + data.task);
 		} else if(data.cmd == 'notifyMaster') { // To log a message on the master
 			console.log('Worker #' + worker.workerID + ' sent a message: ' + data.msg);
 		} else if(data.cmd == 'setVars') { // To send variables to the master
@@ -48,11 +48,17 @@ function setupWorker() {
 		} else if(data.cmd == 'emitEvent') {
 			events.emit(data.eventName, data.eventData);
 		} else if(data.cmd == 'deleteNav') {
-			events.emit('deleteNav', {objectName: data.objectName})
+			events.emit('deleteNav', {objectName: data.objectName, objectType: data.objectType, socketid: data.socketid});
 		} else if(data.cmd == 'setupNavData') {
-			events.emit('setupNavData', {objectName: data.objectName, grid: data.grid, finder: data.finder, socketid: data.socketid, objectType: data.objectType});
+			events.emit('setupNavData', {objectName: data.objectName, socketid: data.socketid, objectType: data.objectType, navData: data.navData});
 		} else if(data.cmd == 'updateObject') {
-			events.emit('updateObject', {objectName: data.objectName, objectPos: data.objectPos, navData: data.navData});
+			events.emit('updateObject', {objectName: data.objectName, objectType: data.objectType, socketid: data.socketid, objectPos: data.objectPos, navData: data.navData, timerID: data.timerID});
+		} else if(data.cmd == 'stopMoveTimer') {
+			events.emit('stopMoveTimer', {timerID: data.timerID});
+		} else if(data.cmd == 'updateZombieObject') {
+			events.emit('updateZombieObject', {objectName: data.objectName, objectPos: data.objectPos, navData: data.navData, timerID: data.timerID});
+		} else if(data.cmd == 'deleteZombieNav') {
+			events.emit('deleteNav', {objectName: data.objectName});
 		}
 	});
 	currWorkers++;
@@ -73,7 +79,7 @@ function taskWorker(cmd, params) {
 			currTasks++;
 			cluster.workers[id].currJobs++;
 			cluster.workers[id].send({cmd: cmd, params: params});
-			console.log('Worker #' + id + ' has started running ' + cmd);
+			//console.log('Worker #' + id + ' has started running ' + cmd);
 			return true;
 		}
 	}

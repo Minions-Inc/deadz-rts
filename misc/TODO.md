@@ -43,7 +43,7 @@ Less important tasks
 * [ ] Add character animations
 * [ ] Balance speed of units
 * [ ] Fix camera rotations for Player 2
-* [ ] Use a seperate thread for server-side processing, to help keep game running at a constant speed under stress (child_process/cluster?)
+* [x] Use a seperate thread for server-side processing, to help keep game running at a constant speed under stress (child_process/cluster?)
 * [x] Make zombie spawn points (instead of tracked object position)
 	* [ ] Refine zombie spawn points
 * [x] Make player spawn points
