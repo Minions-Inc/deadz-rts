@@ -60,6 +60,7 @@ Tasks to do over time
 * [ ] Optimise network usage
 * [ ] Create tests (QUnit)
 * [ ] Playtest game
+* [ ] Clean up unused code (There is a lot of it)
 
 Things to fix
 -------------
