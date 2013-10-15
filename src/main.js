@@ -79,7 +79,7 @@ io.sockets.on('connection', function(socket) {
 });
 updateSceneObjects();
 
-game.events.once('startGame', function() {
+//game.events.once('startGame', function() {
 	game.startSpawningZombies(io);
 	setInterval(function(){game.attackCheck(io);}, 500);
 	setInterval(game.reproduce, 30000);
@@ -88,7 +88,7 @@ game.events.once('startGame', function() {
 	hasStarted = true;
 	io.sockets.emit('startGame');
 	console.log('Started game!');
-});
+//});
 
 function updateSceneObjects() {
 	var objsToSend = [];

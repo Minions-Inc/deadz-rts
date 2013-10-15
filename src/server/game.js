@@ -73,10 +73,10 @@ function newPlayer(socket, io) {
 	console.log(socket.id+" sent newPlayer!");
 	if(objects.length() > 1) {
 		//socket.emit('alert', "There are already 2 players, so you may only spectate!");
-		socket.emit('isPlaying', false);
+		socket.emit('isPlaying', 0);
 		return;
 	}
-	socket.emit('isPlaying', true);
+	socket.emit('isPlaying', objects.length()+1);
 	//objects[socket.id] = {name: data.name, model:data.model, pos:{x:250,y:11.7,z:250}, selected: false};
 	//socket.emit("loadModels", requiredModels);
 	objects[socket.id] = {

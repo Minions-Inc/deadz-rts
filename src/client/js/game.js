@@ -19,9 +19,19 @@ socket.on('loadModels', function(models) {
 	document.getElementById("percentLoaded").innerText=Math.round(1/(models.length+1)*100);
 });
 socket.on('isPlaying', function(playing) {
+	gameUpdate();
 	isPlaying = playing;
-	if(!isPlaying)
+	if(isPlaying == 0)
 		alert("There are already 2 players, so you may only spectate!");
+	if(isPlaying == 2) {
+		camera.position = new THREE.Vector3(64,15,105);
+		pointLight.position = new THREE.Vector3(-125,75,-125);
+		camera.rotateY(180*(Math.PI/180));
+		cameraMin = -10;
+		cameraMax = 115;
+	}
+	camera.rotateOnAxis(new THREE.Vector3(-1.75,0.5,0), 30*(Math.PI/180));
+
 });
 function loadModel(models, i) {
 	console.log((i+1)+" of "+models.length+" loaded");
@@ -98,7 +108,7 @@ function setupNetwork() {
 	document.body.style.cursor="crosshair";
 	//document.body.style.cursor="pointer";
 	socket.emit('loadedModels');
-	gameUpdate();
+	//gameUpdate();
 	render();
 }
 

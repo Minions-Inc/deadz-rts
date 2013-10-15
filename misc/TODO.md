@@ -42,7 +42,7 @@ Less important tasks
 * [ ] Create textures
 * [ ] Add character animations
 * [ ] Balance speed of units
-* [ ] Fix camera rotations for Player 2
+* [x] Fix camera rotations for Player 2
 * [x] Use a seperate thread for server-side processing, to help keep game running at a constant speed under stress (child_process/cluster?)
 * [x] Make zombie spawn points (instead of tracked object position)
 	* [ ] Refine zombie spawn points
@@ -69,8 +69,8 @@ Things to fix
 * [ ] Allow zombies to change target
 * [ ] Allow for multiple levels to be loaded
 * [ ] Stress test server for latency, stability and data integrity (networking)
-* [ ] Fix scaling of pathfinding data vs. real geometry position (pathfinding is currently off scale)
-* [ ] Rescale objects
+* [x] Fix scaling of pathfinding data vs. real geometry position (pathfinding is currently off scale)
+* [x] Rescale objects
 
 Optional milestones
 -------------------

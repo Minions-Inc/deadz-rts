@@ -1,6 +1,6 @@
 function Base() {
 	this.name = new Date().getTime();
-	this.scale = {x:0.5,y:0.5,z:0.5};
+	this.scale = {x:0.25,y:0.25,z:0.25};
 	/*this.pos = {
 		x: 0,
 		y: 11.7,

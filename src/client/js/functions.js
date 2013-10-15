@@ -6,6 +6,7 @@ var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04,
 var windowHalfX, windowHalfY;
 var tps = 30, fpsLimit = 30;
 var isPlaying, gameStarted = false;
+var cameraMin = 10, cameraMax = 135;
 
 function addObj(name, loc, callback) {
 	if(objects[name] == null) {
@@ -128,26 +129,37 @@ function gameUpdate() {
 		gameUpdate();
 	}, 1000/tps); // Ticks Per Second
 
-	if(scrollingHoriz == 1) {
-		camera.position.x -= mouseEdgeSpeed
-		camera.position.z += camera.rotation.z*mouseEdgeSpeed;
+	//var rotationMatrix = new THREE.Matrix4();
+	//var position = new THREE.Vector3(1, 1, 1);
+	//var angle = 0*(Math.PI / 180);
+	var axis = new THREE.Vector3(scrollingHoriz, 0, scrollingVert);
+	axis.applyQuaternion(camera.quaternion);
+	axis.y = 0;
+	axis.normalize();
+	//rotationMatrix.makeRotationAxis(axis, angle).multiplyVector3(position);
+
+	/*if(scrollingHoriz == 1) {
+		camera.position.x -= axis.x*mouseEdgeSpeed;
+		camera.position.z += axis.z*mouseEdgeSpeed;
 	}
 	else if(scrollingHoriz == 2) {
-		camera.position.x += mouseEdgeSpeed;
-		camera.position.z -= camera.rotation.z*mouseEdgeSpeed;
+		camera.position.x += axis.x*mouseEdgeSpeed;
+		camera.position.z -= axis.z*mouseEdgeSpeed;
 	}
 	if(scrollingVert == 1) {
-		camera.position.z -= mouseEdgeSpeed;
-		camera.position.x -= camera.rotation.y*mouseEdgeSpeed;
+		camera.position.z -= axis.z*mouseEdgeSpeed;
+		camera.position.x -= axis.x*mouseEdgeSpeed;
 	}
 	else if(scrollingVert == 2) {
-		camera.position.z += mouseEdgeSpeed;
-		camera.position.x += camera.rotation.y*mouseEdgeSpeed;
-	}
-	if(camera.position.x < 10) camera.position.x=10;
-	if(camera.position.x > 135) camera.position.x=135;
-	if(camera.position.z < 10) camera.position.z=10;
-	if(camera.position.z > 135) camera.position.z=135;
+		camera.position.z += axis.z*mouseEdgeSpeed;
+		camera.position.x += axis.x*mouseEdgeSpeed;
+	}*/
+	camera.position.x += axis.x*mouseEdgeSpeed;
+	camera.position.z += axis.z*mouseEdgeSpeed;
+	if(camera.position.x < cameraMin) camera.position.x=cameraMin;
+	if(camera.position.x > cameraMax) camera.position.x=cameraMax;
+	if(camera.position.z < cameraMin) camera.position.z=cameraMin;
+	if(camera.position.z > cameraMax) camera.position.z=cameraMax;
 }
 
 function onWindowResize() {
@@ -206,9 +218,14 @@ pSystem.position.y=-3.8;
 
 scene.add(pSystem);*/
 
-camera.position=new THREE.Vector3(70,15,18);
-camera.rotation.x=-1;
-camera.rotation.y=0.2;
-camera.rotation.z=0.2;
+camera.position=new THREE.Vector3(70,15,18);//62,15,110
+//camera.rotation.x=-1;
+//camera.rotation.y=0.2;
+//camera.rotation.z=0.2;
+//camera.rotateY(15*(Math.PI/180));
+//camera.rotateX(-30*(Math.PI/180));
+//camera.rotateOnAxis(new THREE.Vector3(-1.75,0.5,0), 30*(Math.PI/180));
+//camera.rotateY(180*(Math.PI/180));
+//camera.rotateOnAxis(new THREE.Vector3(-1.75,0.5,0), 30*(Math.PI/180));
 
 //new THREE.Vector3(280,50,65)
