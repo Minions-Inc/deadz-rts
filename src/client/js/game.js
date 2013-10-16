@@ -127,52 +127,6 @@ function addPlayer(name, model, pos, scale) {
 	});
 }
 
-/*
-var originPoint = PLAYER.position.clone();
-for (var vertexIndex = 0; vertexIndex < PLAYER.geometry.vertices.length; vertexIndex++) {
-	var localVertex = PLAYER.geometry.vertices[vertexIndex].clone();
-	var globalVertex = PLAYER.matrix.multiplyVector3(localVertex);
-	var directionVector = globalVertex.subSelf(PLAYER.position); // RAY Casting Function
-	var ray = new THREE.Ray(PLAYER.position, directionVector.clone().normalize());
-	var collisionResults = ray.intersectObjects(ArrayOfCollideableObjects);
-	if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-		
-	}
-}
-*/
-
-function checkCollision(obj, colObjects) {
-	//objects["Player 65"].geometry.vertices
-	for(var i in obj.geometry.verticies) {
-		colDetect.addRay(obj.geometry.vertices[i]);
-	}
-	for(var i in colObjects) {
-		colDetect.addElement(colObjects[i]);
-	}
-}
-
-function CollisionDetection(){
-    var caster = new THREE.Raycaster();
-    var rays = [];
-    var elements = [];
-
-    this.testElement = function(element){
-        for(var i=0; i<rays.length; i++) {
-            caster.set(element.position, rays[i]);
-            var hits = caster.intersectObjects(elements, true);
-            for(var k=0; k<hits.length; k++) {
-                console.log("hit", hits[k]);
-            }
-        }
-    } 
-    this.addRay = function(ray) {
-        rays.push(ray.normalize());
-    }
-    this.addElement = function(element){
-        elements.push(element);
-    }
-}
-
 function onKeyDown(event) {
 	if(event.type==='keydown') {
 		//console.log(event.keyCode);

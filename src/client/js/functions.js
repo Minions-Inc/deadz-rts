@@ -191,41 +191,4 @@ windowHalfY = window.innerHeight / 2;
 //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 window.addEventListener( 'resize', onWindowResize, false );
 
-/*
-addObj("terrain","level1.js",function(a){
-	a.scale.x=2.125;
-	a.scale.y=2.125;
-	//a.scale.y=0.1;
-	a.scale.z=2.125;
-	a.position.x=-4.5;
-	a.position.z=-4.5;
-});
-*/
-
-/*var pMat = new THREE.ParticleBasicMaterial({size:1});
-var particles = new THREE.Geometry();
-
-for(var i=0; i<level1NavData.length; i++) {
-	for(var j=0; j<level1NavData[i].length; j++) {
-		if(level1NavData[i][j]==0) {
-			particles.vertices.push(new THREE.Vector3(j, 4, i));
-		}
-	}
-}
-
-var pSystem = new THREE.ParticleSystem(particles, pMat);
-pSystem.position.y=-3.8;
-
-scene.add(pSystem);*/
-
-camera.position=new THREE.Vector3(70,15,18);//62,15,110
-//camera.rotation.x=-1;
-//camera.rotation.y=0.2;
-//camera.rotation.z=0.2;
-//camera.rotateY(15*(Math.PI/180));
-//camera.rotateX(-30*(Math.PI/180));
-//camera.rotateOnAxis(new THREE.Vector3(-1.75,0.5,0), 30*(Math.PI/180));
-//camera.rotateY(180*(Math.PI/180));
-//camera.rotateOnAxis(new THREE.Vector3(-1.75,0.5,0), 30*(Math.PI/180));
-
-//new THREE.Vector3(280,50,65)
+camera.position=new THREE.Vector3(70,15,18);
