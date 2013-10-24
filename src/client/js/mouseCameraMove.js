@@ -2,7 +2,7 @@ var mouseEdgeSize = 50;
 var mouseEdgeSpeed = 0.25;
 var scrollingVert = 0;
 var scrollingHoriz = 0;
-var zoomSpeed = 1;
+var zoomSpeed = 50;
 
 function onDocumentMouseMove(e) {
 	if (e.clientX < mouseEdgeSize || e.clientX > window.innerWidth-mouseEdgeSize || e.clientY < mouseEdgeSize || e.clientY > window.innerHeight-mouseEdgeSize) {
@@ -28,11 +28,21 @@ function onDocumentMouseMove(e) {
 function onMouseScroll(e) {
 	if(e.wheelDeltaY < 0) {
 		e.preventDefault();
-		camera.position.y += zoomSpeed;
+		//camera.position.y += zoomSpeed;
+		var zoomSize = Math.abs(e.wheelDeltaY);
+		zoomSize = zoomSize > 100 ? zoomSize : 100;
+		camera.position.y += Math.pow(Math.abs(zoomSize), 2/3)/zoomSpeed;
 	} else if(e.wheelDeltaY > 0) {
 		e.preventDefault();
-		camera.position.y -= zoomSpeed;
+		//camera.position.y -= zoomSpeed;
+		var zoomSize = Math.abs(e.wheelDeltaY);
+		zoomSize = zoomSize > 100 ? zoomSize : 100;
+		camera.position.y -= Math.pow(Math.abs(zoomSize), 2/3)/zoomSpeed;
 	}
+	if(camera.position.y < 8)
+		camera.position.y = 8;
+	if(camera.position.y > 45)
+		camera.position.y = 45;
 }
 
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
