@@ -2,6 +2,7 @@ var mouseEdgeSize = 50;
 var mouseEdgeSpeed = 0.25;
 var scrollingVert = 0;
 var scrollingHoriz = 0;
+var zoomSpeed = 1;
 
 function onDocumentMouseMove(e) {
 	if (e.clientX < mouseEdgeSize || e.clientX > window.innerWidth-mouseEdgeSize || e.clientY < mouseEdgeSize || e.clientY > window.innerHeight-mouseEdgeSize) {
@@ -23,4 +24,17 @@ function onDocumentMouseMove(e) {
 		scrollingVert = 0;
 	}
 }
+
+function onMouseScroll(e) {
+	if(e.wheelDeltaY < 0) {
+		e.preventDefault();
+		camera.position.y += zoomSpeed;
+	} else if(e.wheelDeltaY > 0) {
+		e.preventDefault();
+		camera.position.y -= zoomSpeed;
+	}
+}
+
 document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+window.addEventListener( 'mousewheel', onMouseScroll, false );
+window.addEventListener( 'DOMMouseScroll', onMouseScroll, false );

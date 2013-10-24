@@ -88,7 +88,9 @@ function newPlayer(socket, io) {
 		},
 		buildings: {},
 		inventory: {food: 100, building: 100},
-		selectedObj: {name: "", type: ""}
+		selectedObj: {name: "", type: ""},
+		nextClickBuild: false,
+		nextBuildingPrice: 0
 	};
 	var hero = new objTypes.Hero(socket.id);
 	hero.pos = playerSpawn[objects[socket.id].PlayerID].clone();
@@ -108,6 +110,21 @@ function newPlayer(socket, io) {
 
 function clickPos(socket, io, data) {
 	console.log(data);
+	if(objects[socket.id].nextClickBuild) {
+		createBuilding(socket, {
+			name: "Building"+new Date().getTime(),
+			type: "basic",
+			pos: {
+				x: data.x,
+				y: 3,
+				z: data.z
+			}
+		});
+		objects[socket.id].inventory.building -= objects[socket.id].nextBuildingPrice;
+		objects[socket.id].nextClickBuild = false;
+		objects[socket.id].nextBuildingPrice = 0;
+		return;
+	}
 	try {
 		if(objects[socket.id].selectedObj.name != "") {
 			var selectedObj = objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name];
@@ -337,8 +354,8 @@ function minionGather() {
 function minionGatherTeam() {
 	for(var i in objects) {
 		if(objects.hasOwnProperty(i)) {
-			objects[i].inventory.food += Math.floor(objects[i].Characters.Minions.length()/Math.pow(objects[i].inventory.food,1/4));
-			objects[i].inventory.building += Math.floor(objects[i].Characters.Minions.length()/Math.pow(objects[i].inventory.building,1/2));
+			objects[i].inventory.food += Math.floor(objects[i].Characters.Minions.length()/(Math.pow((objects[i].inventory.food ? objects[i].inventory.food : 1),1/4)*Math.random()*3));
+			objects[i].inventory.building += Math.floor(objects[i].Characters.Minions.length()/(Math.pow((objects[i].inventory.building ? objects[i].inventory.building : 1),1/2)*Math.random()*3));
 		}
 	}
 }
@@ -347,7 +364,15 @@ function createBuilding(socket, data) {
 	var building = new objTypes.Building(data.name, data.type, socket.id)
 	building.pos = data.pos;
 	objects[socket.id].buildings[data.name] = building;
+}
 
+function nextClickBuild(socket) {
+	if(objects[socket.id].inventory.building < 50) {
+		socket.emit('alert', "You do not have enough resources to build this! You are "+(50-objects[socket.id].inventory.building)+" short!");
+		return false;
+	}
+	objects[socket.id].nextBuildingPrice = 50;
+	objects[socket.id].nextClickBuild = true;
 }
 
 module.exports = {
@@ -369,5 +394,6 @@ module.exports = {
 	deleteZombie: deleteZombie,
 	startMoveTimer: startMoveTimer,
 	startZombieMoveTimer: startZombieMoveTimer,
-	stopMoveTimer: stopMoveTimer
+	stopMoveTimer: stopMoveTimer,
+	nextClickBuild: nextClickBuild
 };

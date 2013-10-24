@@ -91,6 +91,8 @@ function setupNetwork() {
 		document.getElementById("commanderCount").innerText = data[socket.socket.sessionid].Commanders;
 		document.getElementById("minionCount").innerText = data[socket.socket.sessionid].Minions;
 		document.getElementById("buildingCount").innerText = data[socket.socket.sessionid].Buildings;
+		document.getElementById("invFoodCount").innerText = data[socket.socket.sessionid].Inventory.Food;
+		document.getElementById("invBuildingCount").innerText = data[socket.socket.sessionid].Inventory.Building;
 	});
 	socket.on('endGame', function(data) {
 		var won = isPlaying ? data.winner == socket.socket.sessionid : true;
@@ -190,6 +192,10 @@ function onKeyDown(event) {
 				var cHeight = prompt('Camera height?',camera.position.y);
 				//cHeight = isNaN(parseFloat(cHeight)) ? camera.position.y : parseFloat(cHeight);
 				camera.position.y = isNaN(parseFloat(cHeight)) ? camera.position.y : parseFloat(cHeight);;
+				break;
+			case 72:
+				console.log('h');
+				socket.emit('nextClickBuild');
 				break;
 			default:
 				console.log('unknown key ('+event.keyCode+')');

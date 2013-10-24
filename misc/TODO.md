@@ -25,7 +25,10 @@ Milestone tasks
 	* [x] Improve scoreboard
 	* [ ] Restyle scoreboard
 * [x] Win game
-* [-] Building placement
+* [x] Building placement
+	* [ ] Add more building types
+	* [ ] Add building health
+	* [ ] Make buildings useful
 * [ ] Destructable buildings
 * [ ] Resource collection
 * [ ] Resource sharing between units
@@ -33,7 +36,7 @@ Milestone tasks
 
 #### Gameplay Elements
 
-* [ ] Grace period (set-up time)
+* [x] Grace period (set-up time)
 
 Less important tasks
 --------------------
