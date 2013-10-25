@@ -198,3 +198,7 @@ cluster.events.on('updateZombieObject', function(data) {
 	object.pos = data.objectPos;
 	object.navData = data.navData;
 });
+cluster.events.on('setTargetPos', function(data) {
+	var object = game.objects[data.socketid].Characters[data.objectType][data.objectName];
+	object.targetPos = data.targetPos;
+});

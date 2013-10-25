@@ -171,10 +171,10 @@ function gameUpdate() {
 			moveAxis.subVectors(objects[i].targetPosition, objects[i].position);
 			moveAxis.y = 0;
 			moveAxis.normalize();
-			if(objects[i].position.distanceTo(objects[i].targetPosition) < (objects[i].speed*10)/tickLength)
+			if(objects[i].position.distanceTo(objects[i].targetPosition) < tickLength*objects[i].speed/100)
 				objects[i].position = objects[i].targetPosition.clone();
 			else
-				objects[i].position.add(moveAxis.multiplyScalar((objects[i].speed*10)/tickLength));
+				objects[i].position.add(moveAxis.multiplyScalar(tickLength*objects[i].speed/100));
 		}
 	}
 }

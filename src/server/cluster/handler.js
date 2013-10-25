@@ -59,6 +59,8 @@ function setupWorker() {
 			events.emit('updateZombieObject', {objectName: data.objectName, objectPos: data.objectPos, navData: data.navData, timerID: data.timerID});
 		} else if(data.cmd == 'deleteZombieNav') {
 			events.emit('deleteNav', {objectName: data.objectName});
+		} else if(data.cmd == 'setTargetPos') {
+			events.emit('setTargetPos', {objectName: data.objectName, objectType: data.objectType, socketid: data.socketid, targetPos: data.targetPos});
 		}
 	});
 	currWorkers++;

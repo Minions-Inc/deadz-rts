@@ -83,6 +83,7 @@ function runPathData(object, objectType) {
 			process.send({cmd: 'updateObject', objectName: object.name, objectType: objectType, socketid: object.owner, objectPos: object.pos, navData: object.navData, timerID: object.moveTimer});
 		}
 	} catch (e) {
+		process.send({cmd: 'setTargetPos', objectName: object.name, objectType: objectType, socketid: object.owner, targetPos: object.pos});
 			//console.warn("FATAL ERROR: "+e.toString());
 			//if(object.navName != undefined) delete object.navData[object.navName];
 			//process.send({cmd: 'stopMoveTimer', timerID: object.moveTimer});
