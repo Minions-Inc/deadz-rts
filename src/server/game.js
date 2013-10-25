@@ -128,7 +128,7 @@ function clickPos(socket, io, data) {
 	try {
 		if(objects[socket.id].selectedObj.name != "") {
 			var selectedObj = objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name];
-			selectedObj.targetPos = {x: Math.floor(data.x), z: Math.floor(data.z)};
+			selectedObj.targetPos = {x: Math.floor(data.x), y: 3, z: Math.floor(data.z)};
 			console.log(objects[socket.id].selectedObj.targetPos);
 			//setupNavData(navData.level1NavData, 128, 128, function(a,b){runPathData(a,b,objects[socket.id].Characters[objects[socket.id].selectedObj.type][objects[socket.id].selectedObj.name],{x:Math.floor(data.x),z:Math.floor(data.z)},1,4,socket,io)});
 			events.emit('cluster', {cmd: 'setupNavData', params: {object: selectedObj, objectType: objects[socket.id].selectedObj.type}});

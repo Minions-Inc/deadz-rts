@@ -2,7 +2,7 @@ var cluster = require('cluster'),
 	navData = require('../../client/js/navDataSmall.js'),
 	PF = require('../../lib/pathfinding'),
 	grid = new PF.Grid(128, 128, navData.level1NavData),
-	finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
+	finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: false});
 
 if(cluster.isWorker) { // Left in for saftey
 	console.log("Cluster worker ID #" + cluster.worker.id + " has started");

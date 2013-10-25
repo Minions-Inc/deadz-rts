@@ -4,9 +4,10 @@ var modelCache = new MicroCache();
 var camera, scene, loader, pointLight, renderer;
 var mouseX = 0, mouseY = 0, mouseXDelta = 0, mouseYDelta = 0, mouseScale = 0.04, mouseDelta = 10;
 var windowHalfX, windowHalfY;
-var tps = 30, fpsLimit = 30;
+var tps = 60, fpsLimit = 30;
 var isPlaying, gameStarted = false;
 var cameraMin = 10, cameraMax = 135;
+var lastTickTime = new Date().getTime();
 
 function addObj(name, loc, callback) {
 	if(objects[name] == null) {
@@ -129,6 +130,9 @@ function gameUpdate() {
 		gameUpdate();
 	}, 1000/tps); // Ticks Per Second
 
+	var tickLength = new Date().getTime() - lastTickTime;
+	lastTickTime = new Date().getTime();
+
 	//var rotationMatrix = new THREE.Matrix4();
 	//var position = new THREE.Vector3(1, 1, 1);
 	//var angle = 0*(Math.PI / 180);
@@ -154,12 +158,25 @@ function gameUpdate() {
 		camera.position.z += axis.z*mouseEdgeSpeed;
 		camera.position.x += axis.x*mouseEdgeSpeed;
 	}*/
-	camera.position.x += axis.x*mouseEdgeSpeed;
-	camera.position.z += axis.z*mouseEdgeSpeed;
+	camera.position.x += axis.x*mouseEdgeSpeed*tickLength/20;
+	camera.position.z += axis.z*mouseEdgeSpeed*tickLength/20;
 	if(camera.position.x < cameraMin) camera.position.x=cameraMin;
 	if(camera.position.x > cameraMax) camera.position.x=cameraMax;
 	if(camera.position.z < cameraMin) camera.position.z=cameraMin;
 	if(camera.position.z > cameraMax) camera.position.z=cameraMax;
+
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i) && objects[i].targetPosition) {
+			var moveAxis = new THREE.Vector3();
+			moveAxis.subVectors(objects[i].targetPosition, objects[i].position);
+			moveAxis.y = 0;
+			moveAxis.normalize();
+			if(objects[i].position.distanceTo(objects[i].targetPosition) < (objects[i].speed*10)/tickLength)
+				objects[i].position = objects[i].targetPosition.clone();
+			else
+				objects[i].position.add(moveAxis.multiplyScalar((objects[i].speed*10)/tickLength));
+		}
+	}
 }
 
 function onWindowResize() {
