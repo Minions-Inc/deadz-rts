@@ -5,6 +5,8 @@ A multiplayer RTS made with three.js, PathFinding.js, MicroCache.js, node.js, so
 
 PLEASE NOTE - INCOMPLETE, MAY OR MAY NOT FUNCTION PROPERLY!
 
+**We have reached pre-alpha!**
+
 How to Run
 ----------
 
