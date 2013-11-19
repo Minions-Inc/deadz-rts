@@ -88,8 +88,12 @@ function Building(name, type, owner) {
 	Base.call(this);
 	this.name = "Building" + name + this.name;
 	this.type = type;
-	this.model = "minionBase";
+	this.model = "RTS-Barracks1";
 	this.owner = owner;
+	this.health = 0;
+	this.maxHealth = 0;
+	this.collisionRadius = 5;
+	this.storageSize = 0;
 }
 
 

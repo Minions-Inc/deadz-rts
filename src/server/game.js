@@ -87,7 +87,7 @@ function newPlayer(socket, io) {
 			Hero: {},
 		},
 		buildings: {},
-		inventory: {food: 100, building: 100},
+		inventory: {food: 80, building: 100, foodStorage: 100},
 		selectedObj: {name: "", type: ""},
 		nextClickBuild: false,
 		nextBuildingPrice: 0
@@ -219,8 +219,11 @@ function deleteZombie(zombieName) {
 function attackCheck(io) {
 	var zombieCol = [];
 	var objCol = [];
+	var buildingCol = [];
 	var p0Objs = [];
 	var p1Objs = [];
+	var p0Buildings = [];
+	var p1Buildings = [];
 	for(var i in zombies) {
 		if(zombies.hasOwnProperty(i)) {
 			zombieCol.push([zombies[i], i]);
@@ -254,6 +257,39 @@ function attackCheck(io) {
 					else if(objects[i].PlayerID == 1)
 						p1Objs.push([objects[i].Characters.Hero[j], i, "Hero"]);
 				}
+			}
+			for(var j in objects[i].buildings) {
+				if(objects[i].buildings.hasOwnProperty(j)) {
+					buildingCol.push([objects[i].buildings[j], i]);
+					if(objects[i].PlayerID == 0)
+						p0Buildings.push([objects[i].buildings[j], i]);
+					else if(objects[i].PlayerID == 1)
+						p1Buildings.push([objects[i].buildings[j], i]);
+				}
+			}
+		}
+	}
+	for(var i=0;i<p0Objs.length;i++) {
+		for(var j=0;j<p1Buildings.length;j++) {
+			if(checkCollision(p0Ojbs[i][0], p1Buildings[j][0], p0Objs[i][0].attackRadius, p1Buildings[j][0].collisionRadius)) {
+				p1Buildings[j][0].health -= p0Objs[i][0].attackPower;
+				console.log(p1Buildings[j][0].name + " was hit! Health: " + p1Buildings[j][0].health)
+			}
+		}
+	}
+	for(var i=0;i<p1Objs.length;i++) {
+		for(var j=0;j<p0Buildings.length;j++) {
+			if(checkCollision(p1Ojbs[i][0], p0Buildings[j][0], p1Objs[i][0].attackRadius, p0Buildings[j][0].collisionRadius)) {
+				p0Buildings[j][0].health -= p1Objs[i][0].attackPower;
+				console.log(p0Buildings[j][0].name + " was hit! Health: " + p0Buildings[j][0].health)
+			}
+		}
+	}
+	for(var i=0;i<zombieCol.length;i++) {
+		for(var j=0;j<buildingCol.length;j++) {
+			if(checkCollision(zombieCol[i][0], buildingCol[j][0], zombieCol[i][0].attackRadius, buildingCol[j][0].collisionRadius)) {
+				buildingCol[j][0].health -= zombieCol[i][0].attackPower;
+				console.log(buildingCol[j][0].name + " was hit! Health: " + buildingCol[j][0].health)
 			}
 		}
 	}
@@ -301,6 +337,13 @@ function attackCheck(io) {
 			delete zombies[zombieCol[i][1]];
 		}
 	}
+	for(var i=0;i<buildingCol.length;i++) {
+		if(buildingCol[i][0].health < 1) {
+			console.log(buildingCol[i][0].name + " has died!");
+			delete objects[buildingCol[i][1]].buildings[buildingCol[i][0].name];
+		}
+	}
+	calculateFoodLimits();
 }
 
 function checkCollision(objA, objB, objAColRad, objBColRad) {
@@ -358,12 +401,31 @@ function minionGatherTeam() {
 			objects[i].inventory.building += Math.floor(objects[i].Characters.Minions.length()/(Math.pow((objects[i].inventory.building ? objects[i].inventory.building : 1),1/2)*Math.random()*3));
 		}
 	}
+	calculateFoodLimits();
+}
+
+function calculateFoodLimits() {
+	for(var i in objects) {
+		if(objects.hasOwnProperty(i)) {
+			objects[i].inventory.foodStorage = 100;
+			for(var j in objects[i].buildings) {
+				if(objects[i].buildings.hasOwnProperty(j)) {
+					objects[i].inventory.foodStorage += objects[i].buildings[j].storageSize;
+				}
+			}
+			if(objects[i].inventory.food > objects[i].inventory.foodStorage)
+				objects[i].inventory.food = objects[i].inventory.foodStorage;
+		}
+	}
 }
 
 function createBuilding(socket, data) {
-	var building = new objTypes.Building(data.name, data.type, socket.id)
+	var building = new objTypes.Building(data.name, data.type, socket.id);
 	building.pos = data.pos;
-	objects[socket.id].buildings[data.name] = building;
+	building.storageSize = 15;
+	building.health = 5;
+	building.maxHealth = 5;
+	objects[socket.id].buildings[building.name] = building;
 }
 
 function nextClickBuild(socket) {

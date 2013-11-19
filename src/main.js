@@ -87,10 +87,10 @@ io.sockets.on('connection', function(socket) {
 updateSceneObjects();
 
 //game.events.once('startGame', function() {
-	setTimeout(function(){
+	//setTimeout(function(){
 		game.startSpawningZombies(io);
 		setInterval(function(){game.attackCheck(io);}, 500);
-	}, 60000); // Grace period
+	//}, 60000); // Grace period
 	setInterval(game.reproduce, 15000);
 	setInterval(game.minionGatherTeam, 7500);
 	updateScoreboard();

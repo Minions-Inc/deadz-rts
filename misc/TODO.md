@@ -27,12 +27,12 @@ Milestone tasks
 * [x] Win game
 * [x] Building placement
 	* [ ] Add more building types
-	* [ ] Add building health
+	* [x] Add building health
 	* [ ] Make buildings useful
-* [ ] Destructable buildings
-* [ ] Resource collection
+* [x] Destructable buildings
+* [x] Resource collection
 * [ ] Resource sharing between units
-* [ ] Resource storing in buildings
+* [x] Resource storing in buildings
 
 #### Gameplay Elements
 
@@ -57,10 +57,10 @@ Less important tasks
 Tasks to do over time
 ---------------------
 
-* [ ] Fix FPS lag
-* [ ] Fix latency issues
+* [x] Fix FPS lag
+* [x] Fix latency issues
 * [ ] Optimise memory usage
-* [ ] Optimise network usage
+* [x] Optimise network usage
 * [ ] Create tests (QUnit)
 * [ ] Playtest game
 * [ ] Clean up unused code (There is a lot of it)
