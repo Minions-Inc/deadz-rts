@@ -86,18 +86,18 @@ io.sockets.on('connection', function(socket) {
 });
 updateSceneObjects();
 
-//game.events.once('startGame', function() {
-	//setTimeout(function(){
+game.events.once('startGame', function() {
+	setTimeout(function(){
 		game.startSpawningZombies(io);
-		setInterval(function(){game.attackCheck(io);}, 500);
-	//}, 60000); // Grace period
+		setInterval(function(){game.attackCheck(io);}, 5000);
+	}, 60000); // Grace period
 	setInterval(game.reproduce, 15000);
 	setInterval(game.minionGatherTeam, 7500);
 	updateScoreboard();
 	hasStarted = true;
 	io.sockets.emit('startGame');
 	console.log('Started game!');
-//});
+});
 
 function updateSceneObjects() {
 	var objsToSend = [];
