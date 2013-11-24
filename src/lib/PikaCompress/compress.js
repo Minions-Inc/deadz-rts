@@ -1,4 +1,6 @@
 /*
+* Credit goes to http://buildnewgames.com/optimizing-websockets-bandwidth/ for most of the code behind this compression algorithm
+* 
 * How to aproach encoding:
 * alternate Uint Float, String
 * each part goes [number of this type][char][char][char][number of this type][char][char][char]
@@ -8,6 +10,10 @@
 * 1 - Uint16, Float32
 * 2 - Uint8, Float64
 * 3 - Uint16, Float64
+* 
+* Usage:
+* To encode, encodeArray([array,of,ints,and,floats,in,any,order], shouldBeUint16InsteadOfUint8, shouldBeFloat64InsteadOfFloat32) - Returns string
+* To decode, decodeArray(stringFromEncodeArray) - auto detects Uint and Float type, returns array
 */
 
 // Compression algorithm:
