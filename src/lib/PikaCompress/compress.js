@@ -46,10 +46,6 @@ var encodeFloat = function(number, u16, f64) {
 	for(var i=0; i<char.length; i++)
 		strToReturn += String.fromCharCode(char[i]);
 	return strToReturn;
-	if(f64)
-		return String.fromCharCode(char[0], char[1], char[2], char[3], char[4], char[5], char[6], char[7]);
-	else
-		return String.fromCharCode(char[0], char[1], char[2], char[3]);
 };
 
 var encodeArray = function(arr, u16, f64) {
