@@ -17,7 +17,8 @@ var objects = {},
 		{x:66,y:3,z:118}
 	],
 	moveTimers = {},
-	timerCount = 0;
+	timerCount = 0,
+	objCount = 0;
 
 function startSpawningZombies(io) {
 	setInterval(function() {
@@ -29,14 +30,14 @@ function startSpawningZombies(io) {
 					if(objToFollow != undefined) break;
 				}
 				if (objToFollow == undefined) throw new Error("Failed to get a random object after 10 attempts!");
-				var zombie = new objTypes.Zombie(objToFollow);
+				var zombie = new objTypes.Zombie(objToFollow, ++objCount);
 				//zombie.pos = zombie.followedObject.pos.clone();
 				zombie.pos = zombieSpawn[Math.floor(Math.random()*zombieSpawn.length)];
 				zombie.targetPos = zombie.followedObject.pos;
 				//zombies["Zombie"+zombieID] = {name: "Zombie"+zombieID, model:"zombie", pos: objects[objectToFollow].pos.clone(), followedObj: objects[objectToFollow]};
 				//setupNavData(navData.level1NavData, 128, 128, function(a,b){zombiePath(a,b,zombie,zombie.followedObject,1,1,io)});
-				zombies[zombie.name] = zombie;
-				startZombieMoveTimer(zombie.name);
+				zombies[zombie.uid] = zombie;
+				startZombieMoveTimer(zombie.uid);
 			} else {
 				console.log("Tried to spawn a zombie when no players had connected!");
 			}
@@ -92,16 +93,16 @@ function newPlayer(socket, io) {
 		nextClickBuild: false,
 		nextBuildingPrice: 0
 	};
-	var hero = new objTypes.Hero(socket.id);
+	var hero = new objTypes.Hero(socket.id, ++objCount);
 	hero.pos = playerSpawn[objects[socket.id].PlayerID].clone();
 	hero.targetPos = playerSpawn[objects[socket.id].PlayerID].clone();
-	objects[socket.id].Characters.Hero[hero.name] = hero;
-	startMoveTimer(socket.id, "Hero", hero.name);
-	var commander = new objTypes.Commander(socket.id);
+	objects[socket.id].Characters.Hero[hero.uid] = hero;
+	startMoveTimer(socket.id, "Hero", hero.uid);
+	var commander = new objTypes.Commander(socket.id, ++objCount);
 	commander.pos = playerSpawn[objects[socket.id].PlayerID].clone();
 	commander.targetPos = playerSpawn[objects[socket.id].PlayerID].clone();
-	objects[socket.id].Characters.Commanders[commander.name] = commander;
-	startMoveTimer(socket.id, "Commanders", commander.name);
+	objects[socket.id].Characters.Commanders[commander.uid] = commander;
+	startMoveTimer(socket.id, "Commanders", commander.uid);
 	if(objects.length() == 2)
 		events.emit('startGame');
 	//new Date().getTime()
@@ -139,6 +140,7 @@ function clickPos(socket, io, data) {
 }
 
 function selectedObj(socket, io, data) {
+	console.log(data);
 	objects[socket.id].selectedObj = {name: "", type: ""};
 	try {
 		if(typeof(data.oldName) != "undefined")
@@ -213,7 +215,7 @@ function zombieMoveTimer(object, timerID) {
 function deleteZombie(zombieName) {
 	var object = zombies[zombieName];
 	if(object.navName != undefined) delete objNav[object.navName];
-	if(object.name != undefined) delete zombies[object.name];
+	if(object.name != undefined) delete zombies[object.uid];
 }
 
 function attackCheck(io) {
@@ -273,7 +275,7 @@ function attackCheck(io) {
 		for(var j=0;j<p1Buildings.length;j++) {
 			if(checkCollision(p0Ojbs[i][0], p1Buildings[j][0], p0Objs[i][0].attackRadius, p1Buildings[j][0].collisionRadius)) {
 				p1Buildings[j][0].health -= p0Objs[i][0].attackPower;
-				console.log(p1Buildings[j][0].name + " was hit! Health: " + p1Buildings[j][0].health)
+				console.log(p1Buildings[j][0].uid + " was hit! Health: " + p1Buildings[j][0].health)
 			}
 		}
 	}
@@ -281,7 +283,7 @@ function attackCheck(io) {
 		for(var j=0;j<p0Buildings.length;j++) {
 			if(checkCollision(p1Ojbs[i][0], p0Buildings[j][0], p1Objs[i][0].attackRadius, p0Buildings[j][0].collisionRadius)) {
 				p0Buildings[j][0].health -= p1Objs[i][0].attackPower;
-				console.log(p0Buildings[j][0].name + " was hit! Health: " + p0Buildings[j][0].health)
+				console.log(p0Buildings[j][0].uid + " was hit! Health: " + p0Buildings[j][0].health)
 			}
 		}
 	}
@@ -289,7 +291,7 @@ function attackCheck(io) {
 		for(var j=0;j<buildingCol.length;j++) {
 			if(checkCollision(zombieCol[i][0], buildingCol[j][0], zombieCol[i][0].attackRadius, buildingCol[j][0].collisionRadius)) {
 				buildingCol[j][0].health -= zombieCol[i][0].attackPower;
-				console.log(buildingCol[j][0].name + " was hit! Health: " + buildingCol[j][0].health)
+				console.log(buildingCol[j][0].uid + " was hit! Health: " + buildingCol[j][0].health)
 			}
 		}
 	}
@@ -298,8 +300,8 @@ function attackCheck(io) {
 			if(checkCollision(p0Objs[i][0], p1Objs[j][0], p0Objs[i][0].attackRadius, p1Objs[j][0].collisionRadius)) {
 				p0Objs[i][0].health -= p1Objs[j][0].attackPower;
 				p1Objs[j][0].health -= p0Objs[i][0].attackPower;
-				console.log(p0Objs[i][0].name + " was hit! Health: " + p0Objs[i][0].health);
-				console.log(p1Objs[j][0].name + " was hit! Health: " + p1Objs[j][0].health);
+				console.log(p0Objs[i][0].uid + " was hit! Health: " + p0Objs[i][0].health);
+				console.log(p1Objs[j][0].uid + " was hit! Health: " + p1Objs[j][0].health);
 			}
 		}
 	}
@@ -308,19 +310,19 @@ function attackCheck(io) {
 			//Player attacking
 			if(checkCollision(objCol[j][0], zombieCol[i][0], objCol[j][0].attackRadius, zombieCol[i][0].collisionRadius)) {
 				zombieCol[i][0].health -= objCol[j][0].attackPower;
-				console.log(zombieCol[i][0].name + " was hit! Health: " + zombieCol[i][0].health);
+				console.log(zombieCol[i][0].uid + " was hit! Health: " + zombieCol[i][0].health);
 			}
 			//Zombie attacking
 			if(checkCollision(zombieCol[i][0], objCol[j][0], zombieCol[i][0].attackRadius, objCol[j][0].collisionRadius)) {
 				objCol[j][0].health -= zombieCol[i][0].attackPower;
-				console.log(objCol[j][0].name + " was hit! Health: " + objCol[j][0].health);
+				console.log(objCol[j][0].uid + " was hit! Health: " + objCol[j][0].health);
 			}
 		}
 	}
 	for(var i=0;i<objCol.length;i++) {
 		if(objCol[i][0].health < 1) {
-			console.log(objCol[i][0].name + " has died!");
-			delete objects[objCol[i][1]].Characters[objCol[i][2]][objCol[i][0].name];
+			console.log(objCol[i][0].uid + " has died!");
+			delete objects[objCol[i][1]].Characters[objCol[i][2]][objCol[i][0].uid];
 			if(objects[objCol[i][1]].Characters.Hero.length() == 0 && objects[objCol[i][1]].Characters.Commanders.length() == 0 && objects[objCol[i][1]].Characters.Minions.length() == 0) {
 				var winner;
 				for(var j in objects) {if(j != objCol[i][1]) {winner = j; break;}}
@@ -333,14 +335,14 @@ function attackCheck(io) {
 	}
 	for(var i=0;i<zombieCol.length;i++) {
 		if(zombieCol[i][0].health < 1) {
-			console.log(zombieCol[i][0].name + " has died!");
+			console.log(zombieCol[i][0].uid + " has died!");
 			delete zombies[zombieCol[i][1]];
 		}
 	}
 	for(var i=0;i<buildingCol.length;i++) {
 		if(buildingCol[i][0].health < 1) {
-			console.log(buildingCol[i][0].name + " has died!");
-			delete objects[buildingCol[i][1]].buildings[buildingCol[i][0].name];
+			console.log(buildingCol[i][0].uid + " has died!");
+			delete objects[buildingCol[i][1]].buildings[buildingCol[i][0].uid];
 		}
 	}
 	calculateFoodLimits();
@@ -357,20 +359,20 @@ function reproduce() {
 			var commCount = objects[i].Characters.Commanders.length(),
 				heroCount = objects[i].Characters.Hero.length();
 			for(var j=0;j<commCount;j++) {
-				var minion = new objTypes.Minion(i);
+				var minion = new objTypes.Minion(i, ++objCount);
 				minion.name = minion.name + "-" + j;
 				minion.pos = playerSpawn[objects[i].PlayerID].clone();
 				minion.targetPos = playerSpawn[objects[i].PlayerID].clone();
-				objects[i].Characters.Minions[minion.name] = minion;
-				startMoveTimer(i, "Minions", minion.name);
+				objects[i].Characters.Minions[minion.uid] = minion;
+				startMoveTimer(i, "Minions", minion.uid);
 			}
 			for(var j=0;j<heroCount;j++) {
-				var commander = new objTypes.Commander(i);
+				var commander = new objTypes.Commander(i, ++objCount);
 				commander.name = commander.name + "-" + j;
 				commander.pos = playerSpawn[objects[i].PlayerID].clone();
 				commander.targetPos = playerSpawn[objects[i].PlayerID].clone();
-				objects[i].Characters.Commanders[commander.name] = commander;
-				startMoveTimer(i, "Commanders", commander.name);
+				objects[i].Characters.Commanders[commander.uid] = commander;
+				startMoveTimer(i, "Commanders", commander.uid);
 			}
 		}
 	}
@@ -420,12 +422,12 @@ function calculateFoodLimits() {
 }
 
 function createBuilding(socket, data) {
-	var building = new objTypes.Building(data.name, data.type, socket.id);
+	var building = new objTypes.Building(data.name, data.type, socket.id, ++objCount);
 	building.pos = data.pos;
 	building.storageSize = 15;
 	building.health = 5;
 	building.maxHealth = 5;
-	objects[socket.id].buildings[building.name] = building;
+	objects[socket.id].buildings[building.uid] = building;
 }
 
 function nextClickBuild(socket) {

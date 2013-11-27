@@ -8,6 +8,8 @@ function Base() {
 	};*/
 	this.pos = {x:64,y:3,z:64};
 	this.model = "";
+	this.uid = 0;
+	this.objectType = 0;
 
 	return this;
 }
@@ -31,7 +33,7 @@ function Character() {
 	return this;
 }
 
-function Minion(owner) {
+function Minion(owner, uid) {
 	Character.call(this);
 	this.name = "Minion" + this.name;
 	this.health = 100;
@@ -40,11 +42,13 @@ function Minion(owner) {
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
+	this.uid = uid;
+	this.objectType = 1;
 
 	return this;
 }
 
-function Commander(owner) {
+function Commander(owner, uid) {
 	Character.call(this);
 	this.name = "Commander" + this.name;
 	this.health = 250;
@@ -53,11 +57,13 @@ function Commander(owner) {
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
+	this.uid = uid;
+	this.objectType = 2;
 
 	return this;
 }
 
-function Hero(owner) {
+function Hero(owner, uid) {
 	Character.call(this);
 	this.name = "Hero" + this.name;
 	this.health = 500;
@@ -66,11 +72,13 @@ function Hero(owner) {
 	this.model = "HumanBase";
 	this.owner = owner;
 	this.navName = this.name + "Nav";
+	this.uid = uid;
+	this.objectType = 3;
 
 	return this;
 }
 
-function Zombie(followedObject) {
+function Zombie(followedObject, uid) {
 	Character.call(this);
 	this.name = "Zombie" + this.name;
 	this.health = 25;
@@ -80,11 +88,13 @@ function Zombie(followedObject) {
 	this.followedObject = followedObject;
 	this.timeToLive = 100;
 	this.navName = this.name + "Nav";
+	this.uid = uid;
+	this.objectType = 4;
 
 	return this;
 }
 
-function Building(name, type, owner) {
+function Building(name, type, owner, uid) {
 	Base.call(this);
 	this.name = "Building" + name + this.name;
 	this.type = type;
@@ -94,6 +104,9 @@ function Building(name, type, owner) {
 	this.maxHealth = 0;
 	this.collisionRadius = 5;
 	this.storageSize = 0;
+	this.uid = uid;
+	this.objectType = 5;
+	this.targetPos = 0;
 }
 
 

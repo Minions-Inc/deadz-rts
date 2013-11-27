@@ -1,3 +1,10 @@
+var modelLookupTable = {
+	1: "HumanBase",
+	2: "HumanBase",
+	3: "HumanBase",
+	4: "zombie",
+	5: "RTS-Barracks1"
+};
 socket.on('connect', function() {
 	//if(playerName == "")playerName = "Player "+Math.floor(Math.random()*100);
 	//socket.emit('newPlayer', {name:playerName, model:"HumanBase"});
@@ -45,6 +52,70 @@ function loadModel(models, i) {
 	});
 }
 function setupNetwork() {
+	socket.on('uObj', function(data) {
+		var arr = decodeArray(data);
+		//console.log(arr);
+		var data = [];
+		var unitData = [];
+		for(var i=0; i<arr.length/15; i++) {
+			data[i] = [];
+			for(var j=0; j<15; j++) {
+				data[i][j] = arr[i*15+j];
+			}
+			unitData[i] = {
+				uid: data[i][0],
+				pos: {x: data[i][1], y: data[i][2], z: data[i][3]},
+				scale: {x: data[i][4], y: data[i][5], z: data[i][6]},
+				targetPos: {x: data[i][7], y: data[i][8], z: data[i][9]},
+				health: data[i][10],
+				maxHealth: data[i][11],
+				speed: data[i][12],
+				owner: data[i][13],
+				objectType: data[i][14]
+			};
+			if(objects.hasOwnProperty(unitData[i].uid)) {
+				if(objects[unitData[i].uid].position.distanceTo(unitData[i].pos) > 4) {
+					objects[unitData[i].uid].position = new THREE.Vector3(unitData[i].pos.x, unitData[i].pos.y, unitData[i].pos.z);
+				}
+				try {
+					if(unitData[i].objectType != 5) {
+						objects[unitData[i].uid].targetPosition = new THREE.Vector3(unitData[i].targetPos.x, unitData[i].targetPos.y, unitData[i].targetPos.z);
+						objects[unitData[i].uid].speed = unitData[i].speed;
+					}
+				} catch(e) {}
+				objects[unitData[i].uid].scale = new THREE.Vector3(unitData[i].scale.x,unitData[i].scale.y,unitData[i].scale.z);
+				objects[unitData[i].uid].owner = unitData[i].owner;
+				objects[unitData[i].uid].health = unitData[i].health;
+				objects[unitData[i].uid].maxHealth = unitData[i].maxHealth;
+				objects[unitData[i].uid].objectType = unitData[i].objectType;
+				if(objects[unitData[i].uid].owner == isPlaying) {
+					objects[unitData[i].uid].material.materials[0].color.r = (objects[unitData[i].uid].maxHealth - objects[unitData[i].uid].health < objects[unitData[i].uid].maxHealth / 2) ? (objects[unitData[i].uid].maxHealth - objects[unitData[i].uid].health) / objects[unitData[i].uid].maxHealth * 0.8 : 0.4;
+					objects[unitData[i].uid].material.materials[0].color.g = (objects[unitData[i].uid].health < objects[unitData[i].uid].maxHealth / 2) ? objects[unitData[i].uid].health / objects[unitData[i].uid].maxHealth * 0.8 : 0.4;
+					if(selectedObj != objects[unitData[i].uid])
+						objects[unitData[i].uid].material.materials[0].color.b = 0;
+					else
+						objects[unitData[i].uid].material.materials[0].color.b = 0.4;
+				}
+			} else {
+				addPlayer(unitData[i].uid, modelLookupTable[unitData[i].objectType], unitData[i].pos, unitData[i].scale, unitData[i].objectType);
+				//console.log("Added "+data[i].name);
+			}
+		}
+		var currObjs = new Object();
+	    for (var attr in objects) {
+	        if (objects.hasOwnProperty(attr)) currObjs[attr] = objects[attr];
+	    }
+		delete currObjs.terrain;
+		for(var i in unitData) {
+			if(currObjs.hasOwnProperty(unitData[i].uid))
+				delete currObjs[unitData[i].uid];
+		}
+		for(var i in currObjs) {
+			remObj(i);
+			//console.log("Removed "+i);
+		}
+		//console.log(data);
+	});
 	socket.on('updateObjects', function(data) {
 		//console.log("Recieved updateObjects!");
 		//console.log(data);
@@ -92,6 +163,25 @@ function setupNetwork() {
 		//setInterval(function(){objects[playerName].position.x+=10}, 1000)
 		//console.log(currObjs);
 	});
+	socket.on('uSB', function(data) {
+		var arr = decodeArray(data);
+		var data = [];
+		for(var i=0; i<arr.length/7; i++) {
+			if(arr[i*7+6] == isPlaying) {	
+				for(var j=0; j<6; j++) {
+					data[j] = arr[i*7+j];
+				}
+				break;
+			} else
+				continue;
+		}
+		document.getElementById("heroCount").innerText = data[0];
+		document.getElementById("commanderCount").innerText = data[1];
+		document.getElementById("minionCount").innerText = data[2];
+		document.getElementById("buildingCount").innerText = data[3];
+		document.getElementById("invFoodCount").innerText = data[4];
+		document.getElementById("invBuildingCount").innerText = data[5];
+	});
 	socket.on('updateScoreboard', function(data) {
 		document.getElementById("heroCount").innerText = data[socket.socket.sessionid].Hero;
 		document.getElementById("commanderCount").innerText = data[socket.socket.sessionid].Commanders;
@@ -120,7 +210,7 @@ function setupNetwork() {
 	render();
 }
 
-function addPlayer(name, model, pos, scale) {
+function addPlayer(name, model, pos, scale, objectType) {
 	//addCube(name, position);
 	addObj(name, model+".js", function(object) {
 		//object.position = new THREE.Vector3(pos.x,pos.y,pos.z);
@@ -130,6 +220,7 @@ function addPlayer(name, model, pos, scale) {
 		//object.material = new THREE.MeshNormalMaterial();
 		object.position = new THREE.Vector3(pos.x,pos.y,pos.z);
 		object.scale = new THREE.Vector3(scale.x,scale.y,scale.z);
+		object.objectType = objectType;
 		//object.position.y = 1000-new THREE.Raycaster(new THREE.Vector3(object.position.x,1000,object.position.z),new THREE.Vector3(0,-1,0)).intersectObject(objects.terrain)[0].distance;
 		//console.log(objects[data.name])
 	});

@@ -33,7 +33,7 @@ function onDocumentMouseDown( event ) {
 		var objsToFind = [];
 		var oldObj = selectedObj;
 		for(var i in objects)
-			if(objects.hasOwnProperty(i) && /^(Hero|Commander|Minion)/.test(i) && objects[i].owner == socket.socket.sessionid)
+			if(objects.hasOwnProperty(i) && objects[i].objectType > 0 && objects[i].objectType < 4 && objects[i].owner == isPlaying)
 				objsToFind.push(objects[i]);
 		var intersects = raycaster.intersectObjects(objsToFind, false);
 		if(intersects.length > 0) {
@@ -41,11 +41,12 @@ function onDocumentMouseDown( event ) {
 			//if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0;
 			selectedObj = intersects[0].object;
 			//selectedObj.material.materials[0].color.b = 0.4;
-			var type = selectedObj.name.match(/^(Hero|Commander|Minion)/)[0];
-			type = type == "Minion" ? "Minions" : type == "Commander" ? "Commanders" : type;
+			//var type = selectedObj.name.match(/^(Hero|Commander|Minion)/)[0];
+			var type = selectedObj.objectType;
+			type = type == 1 ? "Minions" : type == 2 ? "Commanders" : "Hero";
 			if(oldObj != null) {
-				var oldType = oldObj.name.match(/^(Hero|Commander|Minion)/)[0];
-				oldType = oldType == "Minion" ? "Minions" : oldType == "Commander" ? "Commanders" : oldType;
+				var oldType = oldObj.objectType;
+				oldType = oldType == 1 ? "Minions" : oldType == 2 ? "Commanders" : "Hero";
 				socket.emit('selectedObj',{name: selectedObj.name, type: type, oldName: oldObj.name, oldType: oldType});
 			} else {
 				socket.emit('selectedObj',{name: selectedObj.name, type: type});
@@ -54,8 +55,8 @@ function onDocumentMouseDown( event ) {
 			//if(selectedObj != undefined) selectedObj.material.materials[0].color.b = 0;
 			selectedObj = undefined;
 			if(oldObj != null) {
-				var oldType = oldObj.name.match(/^(Hero|Commander|Minion)/)[0];
-				oldType = oldType == "Minion" ? "Minions" : oldType == "Commander" ? "Commanders" : oldType;
+				var oldType = oldObj.objectType;
+				oldType = oldType == 1 ? "Minions" : oldType == 2 ? "Commanders" : "Hero";
 				socket.emit('selectedObj',{oldName: oldObj.name, oldType: oldType});
 			}
 		}

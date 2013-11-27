@@ -6,7 +6,8 @@ var cmdArgs = process.argv.splice(2),
 	io = require('socket.io').listen(server),
 	game = require('./server/game.js'),
 	hasStarted = false,
-	cluster = require('./server/cluster/handler.js');
+	cluster = require('./server/cluster/handler.js'),
+	compress = require('./lib/PikaCompress/compress.js');
 
 io.set('log level', 2);
 io.set('close timeout', 30);
@@ -21,6 +22,7 @@ app.use(express.static(__dirname+'/lib/pathfinding/lib'));
 app.use(express.static(__dirname+'/lib/MicroCache'));
 app.use(express.static(__dirname+'/lib/qunit'));
 app.use(express.static(__dirname+'/client/lib/threejs/build'));
+app.use(express.static(__dirname+'/lib/PikaCompress'));
 
 io.sockets.on('connection', function(socket) {
 	console.log("Got new connection "+socket.id+" from IP: "+socket.handshake.address.address);
@@ -130,13 +132,35 @@ function updateSceneObjects() {
 			objsToSend.push(game.zombies[i]);
 		}
 	}
-	io.sockets.emit('updateObjects', objsToSend);
+	//io.sockets.emit('updateObjects', objsToSend);
+	var output = [];
+	for(var i=0; i<objsToSend.length;i++) {
+		output.push(objsToSend[i].uid);
+		output.push(objsToSend[i].pos.x);
+		output.push(objsToSend[i].pos.y);
+		output.push(objsToSend[i].pos.z);
+		output.push(objsToSend[i].scale.x);
+		output.push(objsToSend[i].scale.y);
+		output.push(objsToSend[i].scale.z);
+		output.push(objsToSend[i].targetPos.x);
+		output.push(objsToSend[i].targetPos.y);
+		output.push(objsToSend[i].targetPos.z);
+		output.push(objsToSend[i].health);
+		output.push(objsToSend[i].maxHealth);
+		output.push(objsToSend[i].speed);
+		output.push(objsToSend[i].owner != undefined ? game.objects[objsToSend[i].owner].PlayerID + 1 : 255);
+		output.push(objsToSend[i].objectType);
+	}
+	output = compress.encodeArray(output, true, false);
+	//console.log("Output: "+output);
+	io.sockets.emit('uObj', output);
 		//io.sockets.emit('movePlayer', {name: objects[socket.id].name, model: objects[socket.id].model, pos: objects[socket.id].pos})
 	setTimeout(updateSceneObjects, 100);
 }
 
 function updateScoreboard() {
 	var scores = {};
+	var output = [];
 	for(var i in game.objects) {
 		if(game.objects.hasOwnProperty(i)) {
 			var i1 = game.objects[i];
@@ -150,9 +174,18 @@ function updateScoreboard() {
 					Building: i1.inventory.building
 				}
 			};
+			output.push(scores[i].Hero);
+			output.push(scores[i].Commanders);
+			output.push(scores[i].Minions);
+			output.push(scores[i].Buildings);
+			output.push(scores[i].Inventory.Food);
+			output.push(scores[i].Inventory.Building);
+			output.push(i1.PlayerID + 1);
 		}
 	}
-	io.sockets.emit('updateScoreboard', scores);
+	output = compress.encodeArray(output, true, false);
+	io.sockets.emit('uSB', output);
+	//io.sockets.emit('updateScoreboard', scores);
 	setTimeout(updateScoreboard, 500);
 }
 

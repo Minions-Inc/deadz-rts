@@ -38,7 +38,7 @@ function setupNavData(object, height, width, objectType) {
 		var navData = {
 			path: finder.findPath(object.pos.x,object.pos.z,object.targetPos.x,object.targetPos.z,grid.clone())
 		};
-		process.send({cmd: 'setupNavData', objectName: object.name, socketid: object.owner, objectType: objectType, navData: navData});
+		process.send({cmd: 'setupNavData', objectName: object.uid, socketid: object.owner, objectType: objectType, navData: navData});
 	} catch(e) {
 		//console.warn("FATAL ERROR: "+e.toString());
 	}
@@ -80,10 +80,10 @@ function runPathData(object, objectType) {
 			//delete object.navData[object.navName];
 		} else if(object.navData != []) {
 			//setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},100/object.speed);
-			process.send({cmd: 'updateObject', objectName: object.name, objectType: objectType, socketid: object.owner, objectPos: object.pos, navData: object.navData, timerID: object.moveTimer});
+			process.send({cmd: 'updateObject', objectName: object.uid, objectType: objectType, socketid: object.owner, objectPos: object.pos, navData: object.navData, timerID: object.moveTimer});
 		}
 	} catch (e) {
-		process.send({cmd: 'setTargetPos', objectName: object.name, objectType: objectType, socketid: object.owner, targetPos: object.pos});
+		process.send({cmd: 'setTargetPos', objectName: object.uid, objectType: objectType, socketid: object.owner, targetPos: object.pos});
 			//console.warn("FATAL ERROR: "+e.toString());
 			//if(object.navName != undefined) delete object.navData[object.navName];
 			//process.send({cmd: 'stopMoveTimer', timerID: object.moveTimer});
@@ -110,7 +110,7 @@ function runZombiePathData(object) {
 			//delete object.navData[object.navName];
 		} else if(object.navData != []) {
 			//setTimeout(function() {runPathData(grid, finder, object, targetPos, moveMult, steps, socket, io, true);},100/object.speed);
-			process.send({cmd: 'updateZombieObject', objectName: object.name, objectPos: object.pos, navData: object.navData, timerID: object.moveTimer});
+			process.send({cmd: 'updateZombieObject', objectName: object.uid, objectPos: object.pos, navData: object.navData, timerID: object.moveTimer});
 		}
 	} catch (e) {
 			//console.warn("FATAL ERROR: "+e.toString());
