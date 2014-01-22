@@ -110,6 +110,7 @@ function newPlayer(socket, io) {
 }
 
 function clickPos(socket, io, data) {
+	if(!objects[socket.id]) return;
 	console.log(data);
 	if(objects[socket.id].nextClickBuild) {
 		createBuilding(socket, {
@@ -140,6 +141,7 @@ function clickPos(socket, io, data) {
 }
 
 function selectedObj(socket, io, data) {
+	if(!objects[socket.id]) return;
 	console.log(data);
 	objects[socket.id].selectedObj = {name: "", type: ""};
 	try {
