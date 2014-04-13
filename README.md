@@ -21,7 +21,7 @@ To do this:
 2. Install required modules for node using cmd/bash:
 
 	```bash
-	$ npm install express socket.io
+	$ npm install express socket.io heap
 	```
 
 3. Clone the repository:
